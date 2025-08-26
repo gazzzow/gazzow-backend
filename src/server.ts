@@ -1,14 +1,14 @@
-import express from 'express'
+import app from "./presentation/express/app.js";
+import connectDb from "./infra/config/db.js";
+
+const PORT = process.env.PORT || 5001;
+
+console.log(PORT);
+
+connectDb().then(() => {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+  });
+});
 
 
-const app = express();
-
-app.use('/api', (req, res) => {
-    res.send('Hello world')
-})
-
-const PORT = 5000;
-
-app.listen(PORT, () => {
-    console.log('server running on port ', PORT)
-})

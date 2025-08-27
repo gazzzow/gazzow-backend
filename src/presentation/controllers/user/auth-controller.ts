@@ -1,24 +1,40 @@
 import type { Request, Response } from "express";
 
-import { UserRepository } from "../../../infrastructure/repositories/user-repository.js";
-import { RegisterUser } from "../../../application/use-cases/user/register-user.js";
-import { PasswordHasher } from "../../../infrastructure/providers/password-hasher.js";
+import { StoreTempUserAndSentOtpUC } from "../../../application/use-cases/user/auth/store-temp-user-and-send-otp.js";
+import type { VerifyOtpAndCreateUserUC } from "../../../application/use-cases/user/auth/verify-otp-and-create-user.js";
 
+export class AuthController {
+  constructor(
+    private storeTempUserAndSendOtpUC: StoreTempUserAndSentOtpUC,
+    private verifyOtpAndCreateUserUC: VerifyOtpAndCreateUserUC
+  ) {}
 
-const userRepository = new UserRepository();
-const passwordHasher = new PasswordHasher(); // Pass salt rounds(optional)
-const registerUser = new RegisterUser(userRepository, passwordHasher);
+  register = async (req: Request, res: Response) => {
+    console.log("User Register API hit");
+    try {
+      const result = await this.storeTempUserAndSendOtpUC.execute(req.body);
+      res.status(200).json({ success: true, message: result });
+    } catch (error: any) {
+      console.log(error);
+      res.status(400).json({ success: false, message: error.message });
+    }
+  };
 
+  verify = async (req: Request, res: Response) => {
+    console.log("Verify Otp API hit");
 
-export const register = async (req: Request, res: Response) => {
+    try {
+      const { email, otp } = req.body;
 
-  console.log("User Register API hit");
+      const result = await this.verifyOtpAndCreateUserUC.execute(email, otp);
+      
+      // extract access and refresh token to store it on http-only cookie then
+      const { accessToken, refreshToken, message, ...data } = result;
 
-  try {
-    const user = await registerUser.execute(req.body);
-    res.status(201).json({ message: "User register successfully", user });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({message: 'User register failed!'})
-  }
-};
+      return res.status(201).json({ success: true, message });
+    } catch (error: any) {
+      console.log(error);
+      res.status(400).json({ success: false, message: error.message });
+    }
+  };
+}

@@ -5,7 +5,7 @@ export const env = {
   port: process.env.PORT || 5001,
   mongo_uri: process.env.MONGO_URI,
   redis_url: process.env.REDIS_URL,
-  otp_ttl_seconds: process.env.OTP_TTL_SECONDS,
+  otp_ttl_seconds: Number(process.env.OTP_TTL_SECONDS),
   smtp: {
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT),

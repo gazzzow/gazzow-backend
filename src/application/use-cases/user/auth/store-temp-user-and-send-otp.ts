@@ -4,6 +4,7 @@ import type { IPasswordHasher } from "../../../providers/password-hasher.js";
 import type { IUser } from "../../../../domain/entities/user.js";
 import { generateOtp } from "../../../../infrastructure/utils/generate-otp.js";
 import type { IUserRepository } from "../../../interfaces/user-repository.js";
+import { env } from "../../../../infrastructure/config/env.js";
 
 export class StoreTempUserAndSentOtpUC {
   constructor(
@@ -32,7 +33,7 @@ export class StoreTempUserAndSentOtpUC {
 
     // Store user data in redis of temp
     const key = `temp:user:${temp.email}`;
-    const OTP_TTL_SECONDS = parseInt(process.env.OTP_TTL_SECONDS || "300", 10);
+    const OTP_TTL_SECONDS = env.otp_ttl_seconds;
     await this.otpStore.set(key, JSON.stringify(temp), OTP_TTL_SECONDS);
 
     // Generate Otp and store hashed otp in redis

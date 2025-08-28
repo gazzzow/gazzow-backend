@@ -1,6 +1,4 @@
 import type {
-  IUser,
-  IUserPublic,
   IUserWithPassword,
 } from "../../domain/entities/user.js";
 

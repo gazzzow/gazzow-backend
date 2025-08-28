@@ -21,14 +21,22 @@ export class EmailService implements IEmailService {
     to: string,
     subject: string,
     text: string,
-    html?: string,
-  ): Promise<void> {}
+    html?: string
+  ): Promise<void> {
+    await this.transporter.sendMail({
+      from: env.smtp.from,
+      to,
+      subject,
+      text,
+      html,
+    });
+  }
 
   async sendOtpNotification(
     to: string,
     subject: string,
     text: string,
-    html?: string,
+    html?: string
   ): Promise<void> {
     await this.transporter.sendMail({
       from: env.smtp.from,

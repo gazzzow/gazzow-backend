@@ -1,7 +1,7 @@
 import type { IEmailService } from "../../../providers/email-service.js";
 import type { IOtpStore } from "../../../providers/otp-service.js";
 import type { IPasswordHasher } from "../../../providers/password-hasher.js";
-import type { ITempUserData, IUser } from "../../../../domain/entities/user.js";
+import type { ITempUserData } from "../../../../domain/entities/user.js";
 import { generateOtp } from "../../../../infrastructure/utils/generate-otp.js";
 import type { IUserRepository } from "../../../interfaces/user-repository.js";
 

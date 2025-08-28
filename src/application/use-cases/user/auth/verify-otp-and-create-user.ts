@@ -9,6 +9,7 @@ import type { IUserRepository } from "../../../interfaces/user-repository.js";
 import type { IOtpStore } from "../../../providers/otp-service.js";
 import type { IPasswordHasher } from "../../../providers/password-hasher.js";
 import type { ITokenService } from "../../../providers/token-service.js";
+import logger from "../../../../utils/logger.js";
 
 export class VerifyOtpAndCreateUserUC {
   constructor(
@@ -91,8 +92,9 @@ export class VerifyOtpAndCreateUserUC {
       }
 
       return userData;
-    } catch (parseError) {
-      throw new Error("Invalid registration data format");
+    } catch (error) {
+      logger.error(error);
+      throw new Error("Invalid registration data format: ");
     }
   }
 
@@ -166,7 +168,9 @@ export class VerifyOtpAndCreateUserUC {
 
       console.log("Cleanup completed for:", email);
     } catch (error) {
-      console.error("Cleanup failed");
+      if (error instanceof Error) {
+        logger.error(`cleanup failed: ${error}`);
+      }
     }
   }
 }

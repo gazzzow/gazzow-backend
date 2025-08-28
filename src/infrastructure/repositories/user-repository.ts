@@ -11,6 +11,7 @@ export class UserRepository implements IUserRepository {
     const newUser = new UserModel(user);
     await newUser.save();
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = newUser.toObject();
     return userWithoutPassword as IUser;
   }

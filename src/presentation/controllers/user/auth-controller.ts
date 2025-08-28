@@ -14,7 +14,8 @@ export class AuthController {
     console.log("User Register API hit");
     try {
       const result = await this.storeTempUserAndSendOtpUC.execute(req.body);
-      res.status(200).json({ success: true, message: result });
+      console.log( '[result] in auth controller: ', result);
+      res.status(200).json({ success: true, message:  "Verification code sent successfully!"});
     } catch (error) {
       if (error instanceof Error) {
         logger.error(error);

@@ -7,6 +7,7 @@ export const env = {
   mongo_uri: process.env.MONGO_URI,
   redis_url: process.env.REDIS_URL,
   otp_ttl_seconds: Number(process.env.OTP_TTL_SECONDS),
+  bcrypt_salt_rounds: Number(process.env.BCRYPT_SALT_ROUNDS),
   smtp: {
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT),

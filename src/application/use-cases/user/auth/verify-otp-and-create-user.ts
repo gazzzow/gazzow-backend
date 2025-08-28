@@ -1,7 +1,7 @@
 import type {
   ITempUserData,
+  IUser,
   IUserPublic,
-  IUserWithPassword,
   IVerificationResult,
 } from "../../../../domain/entities/user.js";
 import { UserRole } from "../../../../domain/enums/user-role.js";
@@ -101,7 +101,7 @@ export class VerifyOtpAndCreateUserUC {
 
   private async createUserSafely(
     tempUserData: ITempUserData
-  ): Promise<IUserWithPassword> {
+  ): Promise<IUser> {
     try {
       // Check if user was created
       const existingUser = await this.userRepository.findByEmail(
@@ -116,7 +116,7 @@ export class VerifyOtpAndCreateUserUC {
         name: tempUserData.name,
         email: tempUserData.email,
         password: tempUserData.password,
-        role: UserRole["USER"],
+        role: UserRole.USER,
       });
 
       return createdUser;

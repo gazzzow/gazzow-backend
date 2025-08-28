@@ -48,6 +48,7 @@ export class VerifyOtpAndCreateUserUC {
           name: createdUser.name,
           email: createdUser.email,
           role: createdUser.role,
+          createdAt: createdUser.createdAt
         },
         message: "Account created successfully",
       };
@@ -141,6 +142,7 @@ export class VerifyOtpAndCreateUserUC {
       name: user.name,
       email: user.email,
       role: user.role,
+      createdAt: user.createdAt,
     };
 
     const [accessToken, refreshToken] = await Promise.all([

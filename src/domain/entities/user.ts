@@ -12,7 +12,7 @@ export interface IUserPublic {
   name: string;
   email: string;
   role: UserRole;
-  createdAt?: Date;
+  createdAt: Date;
 }
 
 export interface IUserWithPassword extends IUser {

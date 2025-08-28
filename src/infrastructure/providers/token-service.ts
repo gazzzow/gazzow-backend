@@ -7,14 +7,12 @@ import type {
 
 export class TokenService implements ITokenService {
   async createAccessToken(payload: ITokenPayload): Promise<string> {
-
     return jwt.sign(payload, env.jwt.access_secret as string, {
       expiresIn: env.jwt.access_expires,
     });
   }
 
   async createRefreshToken(payload: ITokenPayload): Promise<string> {
-
     return jwt.sign(payload, env.jwt.refresh_secret as string, {
       expiresIn: env.jwt.refresh_expires,
     });

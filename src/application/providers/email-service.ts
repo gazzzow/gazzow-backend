@@ -3,12 +3,12 @@ export interface IEmailService {
     to: string,
     subject: string,
     text: string,
-    html?: string
+    html?: string,
   ): Promise<void>;
   sendAccountExistsNotification(
     to: string,
     subject: string,
     text: string,
-    html?: string
+    html?: string,
   ): Promise<void>;
 }

@@ -24,7 +24,7 @@
 //   beforeEach(() => {
 //     // Reset all mocks
 //     jest.clearAllMocks();
-    
+
 //     // Create fresh instance
 //     useCase = new StoreTempUserAndSendOtp(
 //       mockOtpService,
@@ -79,7 +79,7 @@
 
 //       // Act & Assert
 //       await expect(useCase.execute(userData)).rejects.toThrow('Failed to store user data and send OTP');
-      
+
 //       // Verify that subsequent services weren't called
 //       expect(mockOtpService.generateOtp).not.toHaveBeenCalled();
 //       expect(mockEmailService.sendOtpEmail).not.toHaveBeenCalled();
@@ -136,7 +136,7 @@
 //       // Assert - Check data is stored in Redis
 //       const storedData = await redis.get(`otp:${email}`);
 //       expect(storedData).toBeTruthy();
-      
+
 //       const parsedData = JSON.parse(storedData!);
 //       expect(parsedData.otp).toBe(otp);
 //       expect(parsedData.userData).toEqual(userData);
@@ -148,7 +148,7 @@
 //       const email = 'test@example.com';
 //       const otp = '123456';
 //       const userData = { name: 'Test User' };
-      
+
 //       // Use short TTL for testing (1 second)
 //       await otpService.storeOtpWithUserData(email, otp, userData, 1);
 
@@ -167,7 +167,7 @@
 //       const email = 'test@example.com';
 //       const correctOtp = '123456';
 //       const userData = { name: 'Test User' };
-      
+
 //       await otpService.storeOtpWithUserData(email, correctOtp, userData);
 
 //       // Act

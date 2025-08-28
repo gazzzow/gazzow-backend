@@ -25,7 +25,7 @@ const verifyOtpUC = new VerifyOtpAndCreateUserUC(
   otpService,
   passwordHasher,
   userRepository,
-  tokenService
+  tokenService,
 );
 
 const controller = new AuthController(storeTempUC, verifyOtpUC);

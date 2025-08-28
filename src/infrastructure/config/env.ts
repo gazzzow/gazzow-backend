@@ -17,10 +17,10 @@ export const env = {
     access_secret: process.env.JWT_ACCESS_SECRET,
     refresh_secret: process.env.JWT_REFRESH_SECRET,
     access_expires: Math.floor(
-      1000 * 60 * Number(process.env.JWT_ACCESS_EXPIRES)
+      1000 * 60 * Number(process.env.JWT_ACCESS_EXPIRES),
     ),
     refresh_expires: Math.floor(
-      1000 * 60 * 60 * 24 * Number(process.env.JWT_REFRESH_EXPIRES)
+      1000 * 60 * 60 * 24 * Number(process.env.JWT_REFRESH_EXPIRES),
     ),
   },
 };

@@ -1,10 +1,9 @@
 import type { IEmailService } from "../../../providers/email-service.js";
 import type { IOtpStore } from "../../../providers/otp-service.js";
 import type { IPasswordHasher } from "../../../providers/password-hasher.js";
-import type { IUser } from "../../../../domain/entities/user.js";
+import type { ITempUserData, IUser } from "../../../../domain/entities/user.js";
 import { generateOtp } from "../../../../infrastructure/utils/generate-otp.js";
 import type { IUserRepository } from "../../../interfaces/user-repository.js";
-import { env } from "../../../../infrastructure/config/env.js";
 
 export interface IOtpConfig {
   ttlSeconds: number;
@@ -18,17 +17,17 @@ export class StoreTempUserAndSentOtpUC {
     private emailService: IEmailService,
     private passwordHasher: IPasswordHasher,
     private userRepository: IUserRepository,
-    private otpConfig: IOtpConfig
+    private otpConfig: IOtpConfig,
   ) {}
 
   // Store user temp info in redis
   async execute(
-    userData: Omit<IUser, "id" | "role">
+    userData: ITempUserData,
   ): Promise<{ success: boolean; message: string }> {
     try {
       // Check if the user exist or not
       const existingUser = await this.userRepository.findByEmail(
-        userData.email
+        userData.email,
       );
 
       const hashedPassword = await this.passwordHasher.hash(userData.password);
@@ -48,7 +47,7 @@ export class StoreTempUserAndSentOtpUC {
         await this.emailService.sendAccountExistsNotification(
           userData.email,
           this.otpConfig.emailSubject,
-          "An account with this email already exists. If this wasn't you, please ignore this email."
+          "An account with this email already exists. If this wasn't you, please ignore this email.",
         );
       } else {
         const tempUserKey = `temp:user:${tempUserData.email}`;
@@ -59,7 +58,7 @@ export class StoreTempUserAndSentOtpUC {
           await this.otpStore.set(
             tempUserKey,
             JSON.stringify(tempUserData),
-            this.otpConfig.ttlSeconds
+            this.otpConfig.ttlSeconds,
           ),
           await this.otpStore.set(otpKey, hashedOtp, this.otpConfig.ttlSeconds),
         ]);
@@ -67,13 +66,13 @@ export class StoreTempUserAndSentOtpUC {
         // Send OTP via email
         const emailContent = this.otpConfig.emailTemplate(
           otp,
-          Math.floor(this.otpConfig.ttlSeconds / 60)
+          Math.floor(this.otpConfig.ttlSeconds / 60),
         );
 
         await this.emailService.sendOtpNotification(
           userData.email,
           this.otpConfig.emailSubject,
-          emailContent
+          emailContent,
         );
       }
 
@@ -85,13 +84,11 @@ export class StoreTempUserAndSentOtpUC {
     } catch (error) {
       console.error("Error in StoreTempUserAndSentOtpUC:", error);
       throw new Error(
-        "Unable to process registration request. Please try again."
+        "Unable to process registration request. Please try again.",
       );
     }
   }
 }
-
-
 
 // dependency injection with factory function
 export class StoreTempUserAndSentOtpUCFactory {
@@ -103,13 +100,13 @@ export class StoreTempUserAndSentOtpUCFactory {
     config: {
       otpTtlSeconds: number;
       emailSubject: string;
-    }
+    },
   ): StoreTempUserAndSentOtpUC {
     const otpConfig: IOtpConfig = {
       ttlSeconds: config.otpTtlSeconds,
       emailSubject: config.emailSubject,
-      emailTemplate: (otp: string, expiryMinutes: number) => 
-        `Your Gazzow verification code is: ${otp}\n\nThis code expires in ${expiryMinutes} minutes.\n\nIf you didn't request this, please ignore this email.`
+      emailTemplate: (otp: string, expiryMinutes: number) =>
+        `Your Gazzow verification code is: ${otp}\n\nThis code expires in ${expiryMinutes} minutes.\n\nIf you didn't request this, please ignore this email.`,
     };
 
     return new StoreTempUserAndSentOtpUC(
@@ -117,7 +114,7 @@ export class StoreTempUserAndSentOtpUCFactory {
       emailService,
       passwordHasher,
       userRepository,
-      otpConfig
+      otpConfig,
     );
   }
 }

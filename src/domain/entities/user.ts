@@ -1,8 +1,33 @@
+import type { UserRole } from "../enums/user-role.js";
+import type { IBaseUser } from "./base-entity.js";
 
-export interface IUser{
-    id?: string,
-    name: string,
-    email: string, 
-    password: string,
-    role?: 'user' | 'admin',
+export interface IUser extends IBaseUser {
+  name: string;
+  email: string;
+  role: UserRole;
+}
+
+export interface IUserPublic {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  createdAt?: Date;
+}
+
+export interface IUserWithPassword extends IUser {
+  password: string;
+}
+
+export interface IVerificationResult {
+  accessToken: string;
+  refreshToken: string;
+  user: IUserPublic;
+  message: string;
+}
+
+export interface ITempUserData {
+  name: string;
+  email: string;
+  password: string;
 }

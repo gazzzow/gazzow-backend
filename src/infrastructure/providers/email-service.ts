@@ -19,7 +19,11 @@ export class EmailService implements IEmailService {
     });
   }
 
-  async sendOtp(
+  async sendAccountExistsNotification(to: string, subject: string, text: string, html?: string): Promise<void> {
+      
+  }
+
+  async sendOtpNotification(
     to: string,
     subject: string,
     text: string,
@@ -33,4 +37,5 @@ export class EmailService implements IEmailService {
       html,
     });
   }
+
 }

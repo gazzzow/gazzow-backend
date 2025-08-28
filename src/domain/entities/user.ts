@@ -19,6 +19,13 @@ export interface IUserWithPassword extends IUser {
   password: string;
 }
 
+export interface ICreateUserInput {
+  name: string;
+  email: string;
+  password: string;
+  role?: UserRole;
+}
+
 export interface IVerificationResult {
   accessToken: string;
   refreshToken: string;

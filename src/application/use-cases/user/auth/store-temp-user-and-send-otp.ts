@@ -79,7 +79,7 @@ export class StoreTempUserAndSentOtpUC {
       return {
         success: true,
         message:
-          "You will receive a verification code shortly. Please check you email.",
+          `You will receive a verification code shortly. Please check you email.[${otp}]`,
       };
     } catch (error) {
       console.error("Error in StoreTempUserAndSentOtpUC:", error);

@@ -1,20 +1,25 @@
-import type { IBaseUser } from "../../domain/entities/base-entity.js";
-import type { UserRole } from "../../domain/enums/user-role.js";
+import type { IUserRepository } from "../../application/interfaces/user-repository.js";
+import type {
+  ICreateUserInput,
+  IUser,
+  IUserWithPassword,
+} from "../../domain/entities/user.js";
+import { UserModel } from "../db/models/user-model.js";
 
-export interface IUser extends IBaseUser {
-  name: string;
-  email: string;
-  role: UserRole;
-}
+export class UserRepository implements IUserRepository {
+  async create(user: ICreateUserInput): Promise<IUser> {
+    const newUser = new UserModel(user);
+    await newUser.save();
 
-export interface IUserWithPassword extends IUser {
-  password: string;
-}
+    const { password, ...userWithoutPassword } = newUser.toObject();
+    return userWithoutPassword as IUser;
+  }
 
-export interface IUserPublic {
-  id: string;
-  name: string;
-  email: string;
-  role: UserRole;
-  createdAt?: Date;
+  async findByEmail(email: string): Promise<IUserWithPassword | null> {
+    const user = await UserModel.findOne({
+      email,
+    }).lean();
+
+    return user as IUserWithPassword;
+  }
 }

@@ -6,7 +6,7 @@ import type { VerifyOtpAndCreateUserUC } from "../../../application/use-cases/us
 export class AuthController {
   constructor(
     private storeTempUserAndSendOtpUC: StoreTempUserAndSentOtpUC,
-    private verifyOtpAndCreateUserUC: VerifyOtpAndCreateUserUC
+    private verifyOtpAndCreateUserUC: VerifyOtpAndCreateUserUC,
   ) {}
 
   register = async (req: Request, res: Response) => {
@@ -27,7 +27,7 @@ export class AuthController {
       const { email, otp } = req.body;
 
       const result = await this.verifyOtpAndCreateUserUC.execute(email, otp);
-      
+
       // extract access and refresh token to store it on http-only cookie then
       const { accessToken, refreshToken, message, ...data } = result;
 

@@ -1,6 +1,10 @@
-import type { IUser } from "../../domain/entities/user.js";
+import type {
+  IUser,
+  IUserPublic,
+  IUserWithPassword,
+} from "../../domain/entities/user.js";
 
 export interface IUserRepository {
-  create(user: IUser): Promise<IUser>;
-  findByEmail(email: string): Promise<IUser | null>;
+  create(user: Partial<IUserWithPassword>): Promise<IUserWithPassword>;
+  findByEmail(email: string): Promise<IUserWithPassword | null>;
 }

@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
 import type { IUser } from "../../../domain/entities/user.js";
 
-export interface IUserDocument extends Document, Omit<IUser, 'id'> {}
+export interface IUserDocument extends Document, Omit<IUser, "id"> {}
 
 const userSchema = new Schema<IUserDocument>({
   name: { type: String, required: true },
@@ -10,5 +10,4 @@ const userSchema = new Schema<IUserDocument>({
   role: { type: String, enum: ["user", "admin"], default: "user" },
 });
 
-
-export const UserModel = mongoose.model('User', userSchema)
+export const UserModel = mongoose.model("User", userSchema);

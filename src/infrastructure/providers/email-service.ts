@@ -2,8 +2,6 @@ import { env } from "../config/env.js";
 import nodemailer from "nodemailer";
 import type { IEmailService } from "../../application/providers/email-service.js";
 
-
-
 export class EmailService implements IEmailService {
   private transporter: nodemailer.Transporter;
 
@@ -19,11 +17,18 @@ export class EmailService implements IEmailService {
     });
   }
 
-  async sendOtp(
+  async sendAccountExistsNotification(
     to: string,
     subject: string,
     text: string,
-    html?: string
+    html?: string,
+  ): Promise<void> {}
+
+  async sendOtpNotification(
+    to: string,
+    subject: string,
+    text: string,
+    html?: string,
   ): Promise<void> {
     await this.transporter.sendMail({
       from: env.smtp.from,

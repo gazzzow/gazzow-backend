@@ -1,13 +1,8 @@
-export interface ITokenPayload<T = string> {
-  userId: T;
-  role?: T;
-}
+import type { IUserPublic } from "../../domain/entities/user.js";
 
 export interface ITokenService {
-  createAccessToken(payload: ITokenPayload): Promise<string>;
-  createRefreshToken(payload: ITokenPayload): Promise<string>;
-  verifyAccessToken(token: string): Promise<ITokenPayload>;
-  verifyRefreshToken(token: string): Promise<ITokenPayload>;
+  createAccessToken(payload: IUserPublic): Promise<string>;
+  createRefreshToken(payload: IUserPublic): Promise<string>;
+  verifyAccessToken(token: string): Promise<IUserPublic>;
+  verifyRefreshToken(token: string): Promise<IUserPublic>;
 }
-
-

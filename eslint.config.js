@@ -22,6 +22,7 @@ export default [
       prettier
     },
     rules: {
+      "no-console": process.env.NODE_ENV === "production" ? "error" : "off",
       ...js.configs.recommended.rules,
       ...ts.configs.recommended.rules,
       ...security.configs.recommended.rules,

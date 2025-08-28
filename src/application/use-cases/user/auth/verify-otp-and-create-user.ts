@@ -1,7 +1,7 @@
 import type {
   ITempUserData,
+  IUser,
   IUserPublic,
-  IUserWithPassword,
   IVerificationResult,
 } from "../../../../domain/entities/user.js";
 import { UserRole } from "../../../../domain/enums/user-role.js";
@@ -9,6 +9,7 @@ import type { IUserRepository } from "../../../interfaces/user-repository.js";
 import type { IOtpStore } from "../../../providers/otp-service.js";
 import type { IPasswordHasher } from "../../../providers/password-hasher.js";
 import type { ITokenService } from "../../../providers/token-service.js";
+import logger from "../../../../utils/logger.js";
 
 export class VerifyOtpAndCreateUserUC {
   constructor(
@@ -47,6 +48,7 @@ export class VerifyOtpAndCreateUserUC {
           name: createdUser.name,
           email: createdUser.email,
           role: createdUser.role,
+          createdAt: createdUser.createdAt
         },
         message: "Account created successfully",
       };
@@ -91,14 +93,15 @@ export class VerifyOtpAndCreateUserUC {
       }
 
       return userData;
-    } catch (parseError) {
-      throw new Error("Invalid registration data format");
+    } catch (error) {
+      logger.error(error);
+      throw new Error("Invalid registration data format: ");
     }
   }
 
   private async createUserSafely(
     tempUserData: ITempUserData
-  ): Promise<IUserWithPassword> {
+  ): Promise<IUser> {
     try {
       // Check if user was created
       const existingUser = await this.userRepository.findByEmail(
@@ -113,7 +116,7 @@ export class VerifyOtpAndCreateUserUC {
         name: tempUserData.name,
         email: tempUserData.email,
         password: tempUserData.password,
-        role: UserRole["USER"],
+        role: UserRole.USER,
       });
 
       return createdUser;
@@ -139,6 +142,7 @@ export class VerifyOtpAndCreateUserUC {
       name: user.name,
       email: user.email,
       role: user.role,
+      createdAt: user.createdAt,
     };
 
     const [accessToken, refreshToken] = await Promise.all([
@@ -166,7 +170,9 @@ export class VerifyOtpAndCreateUserUC {
 
       console.log("Cleanup completed for:", email);
     } catch (error) {
-      console.error("Cleanup failed");
+      if (error instanceof Error) {
+        logger.error(`cleanup failed: ${error}`);
+      }
     }
   }
 }

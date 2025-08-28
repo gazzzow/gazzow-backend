@@ -1,10 +1,10 @@
 import type {
+  ICreateUserInput,
   IUser,
-  IUserPublic,
   IUserWithPassword,
 } from "../../domain/entities/user.js";
 
 export interface IUserRepository {
-  create(user: Partial<IUserWithPassword>): Promise<IUserWithPassword>;
+  create(user: ICreateUserInput): Promise<IUser>;
   findByEmail(email: string): Promise<IUserWithPassword | null>;
 }

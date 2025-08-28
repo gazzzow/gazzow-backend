@@ -12,11 +12,18 @@ export interface IUserPublic {
   name: string;
   email: string;
   role: UserRole;
-  createdAt?: Date;
+  createdAt: Date;
 }
 
 export interface IUserWithPassword extends IUser {
   password: string;
+}
+
+export interface ICreateUserInput {
+  name: string;
+  email: string;
+  password: string;
+  role?: UserRole;
 }
 
 export interface IVerificationResult {

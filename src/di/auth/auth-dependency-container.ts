@@ -3,7 +3,7 @@ import { VerifyOtpAndCreateUserUC } from "../../application/use-cases/user/auth/
 import { env } from "../../infrastructure/config/env.js";
 import { EmailService } from "../../infrastructure/providers/email-service.js";
 import { OtpStore } from "../../infrastructure/providers/otp-service.js";
-import { PasswordHasher } from "../../infrastructure/providers/hash-service.js";
+import { HashService } from "../../infrastructure/providers/hash-service.js";
 import { TokenService } from "../../infrastructure/providers/token-service.js";
 import { UserRepository } from "../../infrastructure/repositories/user-repository.js";
 import { AuthController } from "../../presentation/controllers/user/auth-controller.js";
@@ -33,8 +33,8 @@ export class AuthDependencyContainer {
     return new UserRepository();
   }
 
-  createPasswordHasher(): PasswordHasher {
-    return new PasswordHasher(this.config.saltRounds);
+  createPasswordHasher(): HashService {
+    return new HashService(this.config.saltRounds);
   }
 
   createOtpStore(): OtpStore {

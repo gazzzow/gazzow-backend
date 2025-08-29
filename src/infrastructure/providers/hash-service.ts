@@ -1,7 +1,7 @@
 import type { IHashService } from "../../application/providers/hash-service.js";
 import bcrypt from "bcrypt";
 
-export class PasswordHasher implements IHashService {
+export class HashService implements IHashService {
   private readonly saltRounds: number;
 
   constructor(saltRounds: number = 10) {

@@ -1,3 +1,78 @@
 2025-08-28 20:26:21 [[31merror[39m]: Verification code has expired. Please request a new one.
 2025-08-28 20:26:53 [[31merror[39m]: Verification code has expired. Please request a new one.
 2025-08-28 20:30:23 [[31merror[39m]: Verification code has expired. Please request a new one.
+2025-08-28 21:56:33 [[32minfo[39m]: testing client request with cors
+2025-08-28 22:50:41 [[31merror[39m]: Email and Otp are required
+2025-08-28 22:53:54 [[31merror[39m]: Invalid registration data
+2025-08-28 22:53:54 [[31merror[39m]: Invalid registration data format: 
+2025-08-28 22:55:49 [[31merror[39m]: Verification code has expired. Please request a new one.
+2025-08-28 22:56:10 [[31merror[39m]: Verification code has expired. Please request a new one.
+2025-08-28 22:56:12 [[31merror[39m]: Verification code has expired. Please request a new one.
+2025-08-28 22:56:57 [[31merror[39m]: data and hash must be strings
+2025-08-28 22:57:20 [[31merror[39m]: Invalid registration data
+2025-08-28 22:57:20 [[31merror[39m]: Invalid registration data format: 
+2025-08-28 22:57:48 [[31merror[39m]: Invalid registration data
+2025-08-28 22:57:48 [[31merror[39m]: Invalid registration data format: 
+2025-08-28 22:58:14 [[31merror[39m]: Invalid registration data
+2025-08-28 22:58:14 [[31merror[39m]: Invalid registration data format: 
+2025-08-28 23:00:27 [[32minfo[39m]: user data : [object Object]
+2025-08-28 23:00:27 [[31merror[39m]: Invalid registration data
+2025-08-28 23:00:27 [[31merror[39m]: Invalid registration data format: 
+2025-08-28 23:01:07 [[32minfo[39m]: Temp payload : {"email":"mhdabbasfirdous@gmail.com","password":"$2b$08$QT8wAz1NN13AzLAAyDQC3.Wy8ur1NnigX73clbpbF32XC0p8Ltf9e"}
+2025-08-28 23:01:07 [[32minfo[39m]: user data : [object Object]
+2025-08-28 23:01:07 [[31merror[39m]: Invalid registration data
+2025-08-28 23:01:07 [[31merror[39m]: Invalid registration data format: 
+2025-08-28 23:07:29 [[32minfo[39m]: temp user data before storing redis cache: [object Object]
+2025-08-28 23:08:29 [[32minfo[39m]: temp user data before storing redis cache: [object Object]
+2025-08-28 23:08:47 [[32minfo[39m]: temp user data before storing redis cache: [object Object]
+2025-08-28 23:08:49 [[32minfo[39m]: temp user data before storing redis cache: [object Object]
+2025-08-28 23:09:04 [[32minfo[39m]: Temp payload : {"name":"Abbas","email":"mhdabbasfirdous@gmail.com","password":"$2b$08$FYdXYfSl0Sq8oLlqqkRu3e9TQv8C.1EWsujbYnKRlp.Wf0iulc/T6"}
+2025-08-28 23:09:04 [[32minfo[39m]: user data : [object Object]
+2025-08-28 23:10:29 [[31merror[39m]: Verification code has expired. Please request a new one.
+2025-08-29 09:13:07 [[32minfo[39m]: temp user data before storing redis cache: [object Object]
+2025-08-29 09:16:22 [[32minfo[39m]: temp user data before storing redis cache: [object Object]
+2025-08-29 09:17:28 [[32minfo[39m]: temp user data before storing redis cache: [object Object]
+2025-08-29 09:17:48 [[32minfo[39m]: Temp payload : {"name":"Muhammed abbas","email":"sample@gamil.com","password":"$2b$08$N4Z.VMtZH.XkgPjy6nwAUO1LWR2kHM6R.8S4g34N3PjYXbvpH0Czm"}
+2025-08-29 09:17:48 [[32minfo[39m]: user data : [object Object]
+2025-08-29 09:18:32 [[31merror[39m]: Verification code has expired. Please request a new one.
+2025-08-29 09:19:32 [[31merror[39m]: Verification code has expired. Please request a new one.
+2025-08-29 09:20:28 [[31merror[39m]: Verification code has expired. Please request a new one.
+2025-08-29 09:20:48 [[32minfo[39m]: temp user data before storing redis cache: [object Object]
+2025-08-29 09:21:07 [[32minfo[39m]: Temp payload : {"name":"Muhammed abbas","email":"hello@gmail.com","password":"$2b$08$r8gckYvmyfW4exv4gcRBLe.kgsiHR/m3vhNvEAbu0KSmH5v4bATne"}
+2025-08-29 09:21:07 [[32minfo[39m]: user data : [object Object]
+2025-08-29 09:22:38 [[31merror[39m]: Verification code has expired. Please request a new one.
+2025-08-29 09:23:37 [[32minfo[39m]: temp user data before storing redis cache: [object Object]
+2025-08-29 09:23:54 [[32minfo[39m]: Temp payload : {"name":"Muhammed abbas","email":"abbas@gmail.com","password":"$2b$08$MJnyJKN1zqvhAQDmwvQaEuSTl9WF2a6b8YTm06FykKpUA1g3mXWxO"}
+2025-08-29 09:23:54 [[32minfo[39m]: user data : [object Object]
+2025-08-29 09:25:01 [[31merror[39m]: Verification code has expired. Please request a new one.
+2025-08-29 10:37:35 [[31merror[39m]: Verification code has expired. Please request a new one.
+2025-08-29 10:38:24 [[31merror[39m]: Verification code has expired. Please request a new one.
+2025-08-29 10:40:52 [[32minfo[39m]: Otp payload: 676147
+2025-08-29 10:40:52 [[31merror[39m]: Verification code has expired. Please request a new one.
+2025-08-29 10:43:24 [[32minfo[39m]: temp user data before storing redis cache: [object Object]
+2025-08-29 10:43:36 [[32minfo[39m]: Otp payload: 238147
+2025-08-29 10:43:37 [[32minfo[39m]: Temp payload : {"name":"Muhammed abbas","email":"mhdabbasfirdous@gmail.com","password":"$2b$08$SiVYesvRnDsg5ULzuLzn5ej3xXQRss/tIYLsDGRea4DuChKLJ6N62"}
+2025-08-29 10:43:37 [[32minfo[39m]: user data : [object Object]
+2025-08-29 10:43:37 [[31merror[39m]: option expires is invalid
+2025-08-29 10:57:33 [[32minfo[39m]: temp user data before storing redis cache: [object Object]
+2025-08-29 10:57:52 [[32minfo[39m]: Otp payload: 631485
+2025-08-29 10:57:52 [[32minfo[39m]: Temp payload : {"name":"Muhammed Abbas","email":"hello@gmail.com","password":"$2b$08$59bi3bFHclxJHXxHgV.je.DWojxOrcxUfsjDChUghjiLbVQDTfWma"}
+2025-08-29 10:57:52 [[32minfo[39m]: user data : [object Object]
+2025-08-29 10:57:52 [[32minfo[39m]: Tokens generated for user:
+2025-08-29 10:57:52 [[31merror[39m]: option expires is invalid
+2025-08-29 10:59:59 [[32minfo[39m]: temp user data before storing redis cache: [object Object]
+2025-08-29 11:00:08 [[32minfo[39m]: Otp payload: 176351
+2025-08-29 11:00:08 [[32minfo[39m]: Temp payload : {"name":"User","email":"user@gmail.com","password":"$2b$08$jjGDyhiSxyViryJOJFWAWeFk9ssitOZk4mCk92fqdMWTIb0BiLlBu"}
+2025-08-29 11:00:08 [[32minfo[39m]: user data : [object Object]
+2025-08-29 11:00:08 [[32minfo[39m]: Tokens generated for user:
+2025-08-29 11:00:08 [[32minfo[39m]: verify otp result: [object Object]
+2025-08-29 11:00:08 [[31merror[39m]: option expires is invalid
+2025-08-29 11:01:12 [[32minfo[39m]: Otp payload: 176351
+2025-08-29 11:01:12 [[31merror[39m]: Verification code has expired. Please request a new one.
+2025-08-29 11:01:46 [[32minfo[39m]: temp user data before storing redis cache: [object Object]
+2025-08-29 11:02:04 [[32minfo[39m]: Otp payload: 338297
+2025-08-29 11:02:04 [[32minfo[39m]: Temp payload : {"name":"fdgsdf","email":"dfgdf@gmail.com","password":"$2b$08$nWOFNXz/I9F/78wYf420OuK4ATj5GSMnsYOr/BWiALogcEwQzDkby"}
+2025-08-29 11:02:04 [[32minfo[39m]: user data : [object Object]
+2025-08-29 11:02:04 [[32minfo[39m]: Tokens generated for user:
+2025-08-29 11:02:04 [[32minfo[39m]: verify otp result data: [object Object]
+2025-08-29 11:02:04 [[31merror[39m]: option expires is invalid

@@ -4,6 +4,7 @@ import type { IPasswordHasher } from "../../../providers/password-hasher.js";
 import type { ITempUserData } from "../../../../domain/entities/user.js";
 import { generateOtp } from "../../../../infrastructure/utils/generate-otp.js";
 import type { IUserRepository } from "../../../interfaces/user-repository.js";
+import logger from "../../../../utils/logger.js";
 
 export interface IOtpConfig {
   ttlSeconds: number;
@@ -54,6 +55,7 @@ export class StoreTempUserAndSentOtpUC {
         const otpKey = `otp:register:${tempUserData.email}`;
 
         // Store temp user data and otp on redis
+        logger.info(`temp user data before storing redis cache: ${tempUserData}`)
         await Promise.all([
           await this.otpStore.set(
             tempUserKey,

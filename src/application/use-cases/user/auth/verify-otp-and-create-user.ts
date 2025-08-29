@@ -83,9 +83,11 @@ export class VerifyOtpAndCreateUserUC {
     if (!tempPayload) {
       throw new Error("Registration session has expired. Please start over.");
     }
+    logger.info(`Temp payload : ${tempPayload}`)
 
     try {
       const userData = JSON.parse(tempPayload);
+      logger.info(`user data : ${userData}`)
 
       // Validate required fields
       if (!userData.name || !userData.email || !userData.password) {
@@ -150,8 +152,8 @@ export class VerifyOtpAndCreateUserUC {
       this.tokenService.createRefreshToken(payload),
     ]);
 
-    console.log("Tokens generated for user:", {
-      userId: user.id,
+    logger.info("Tokens generated for user:", {
+      userId: user.id, // fix: user id is undefined
       email: user.email,
       timestamp: new Date().toISOString(),
     });

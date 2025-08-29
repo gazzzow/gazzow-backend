@@ -6,7 +6,7 @@ import type {
 import { UserRole } from "../../../../domain/enums/user-role.js";
 import type { IUserRepository } from "../../../interfaces/user-repository.js";
 import type { IOtpStore } from "../../../providers/otp-service.js";
-import type { IPasswordHasher } from "../../../providers/password-hasher.js";
+import type { IHashService } from "../../../providers/hash-service.js";
 import type { ITokenService } from "../../../providers/token-service.js";
 import logger from "../../../../utils/logger.js";
 import { UserMapper } from "../../../mappers/user.js";
@@ -14,7 +14,7 @@ import { UserMapper } from "../../../mappers/user.js";
 export class VerifyOtpAndCreateUserUC {
   constructor(
     private otpStore: IOtpStore,
-    private passwordHash: IPasswordHasher,
+    private passwordHash: IHashService,
     private userRepository: IUserRepository,
     private tokenService: ITokenService
   ) {}

@@ -1,6 +1,6 @@
 import type { IEmailService } from "../../../providers/email-service.js";
 import type { IOtpStore } from "../../../providers/otp-service.js";
-import type { IPasswordHasher } from "../../../providers/password-hasher.js";
+import type { IHashService } from "../../../providers/hash-service.js";
 import type { ITempUserData } from "../../../../domain/entities/user.js";
 import { generateOtp } from "../../../../infrastructure/utils/generate-otp.js";
 import type { IUserRepository } from "../../../interfaces/user-repository.js";
@@ -16,7 +16,7 @@ export class StoreTempUserAndSentOtpUC {
   constructor(
     private otpStore: IOtpStore,
     private emailService: IEmailService,
-    private passwordHasher: IPasswordHasher,
+    private hashService: IHashService,
     private userRepository: IUserRepository,
     private otpConfig: IOtpConfig,
   ) {}
@@ -31,7 +31,7 @@ export class StoreTempUserAndSentOtpUC {
         userData.email,
       );
 
-      const hashedPassword = await this.passwordHasher.hash(userData.password);
+      const hashedPassword = await this.hashService.hash(userData.password);
 
       const tempUserData = {
         name: userData.name,
@@ -41,7 +41,7 @@ export class StoreTempUserAndSentOtpUC {
 
       // Generate Otp and store hashed otp in redis
       const otp = generateOtp();
-      const hashedOtp = await this.passwordHasher.hash(otp);
+      const hashedOtp = await this.hashService.hash(otp);
 
       if (existingUser) {
         // User exists - send different email like registration attempt
@@ -97,7 +97,7 @@ export class StoreTempUserAndSentOtpUCFactory {
   static create(
     otpStore: IOtpStore,
     emailService: IEmailService,
-    passwordHasher: IPasswordHasher,
+    hashService: IHashService,
     userRepository: IUserRepository,
     config: {
       otpTtlSeconds: number;
@@ -114,7 +114,7 @@ export class StoreTempUserAndSentOtpUCFactory {
     return new StoreTempUserAndSentOtpUC(
       otpStore,
       emailService,
-      passwordHasher,
+      hashService,
       userRepository,
       otpConfig,
     );

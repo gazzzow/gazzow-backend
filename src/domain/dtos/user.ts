@@ -7,3 +7,15 @@ export interface IUserPublicDTO {
     role: UserRole;
     createdAt: Date;
 }
+
+
+export interface ILoginRequestDTO{
+    email: string;
+    password: string;
+}
+
+export interface ILoginResponseDTO{
+    success: boolean;
+    user: IUserPublicDTO;
+    message: string;
+}

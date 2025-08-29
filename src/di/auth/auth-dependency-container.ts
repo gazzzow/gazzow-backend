@@ -7,6 +7,7 @@ import { HashService } from "../../infrastructure/providers/hash-service.js";
 import { TokenService } from "../../infrastructure/providers/token-service.js";
 import { UserRepository } from "../../infrastructure/repositories/user-repository.js";
 import { AuthController } from "../../presentation/controllers/user/auth-controller.js";
+import { LoginUserUC } from "../../application/use-cases/user/auth/login-user.js";
 
 export interface IAppConfig {
   otpTtlSeconds: number;
@@ -75,10 +76,19 @@ export class AuthDependencyContainer {
     )
   }
 
+  loginUC(): LoginUserUC{
+    return new LoginUserUC(
+      this.createUserRepository(),
+      this.createPasswordHasher(),
+      this.createTokenService(),
+    )
+  }
+
   createAuthController(): AuthController{
     return new AuthController(
       this.createStoreTempUC(),
       this.createVerifyOtpUC(),
+      this.loginUC(),
     )
   }
 }

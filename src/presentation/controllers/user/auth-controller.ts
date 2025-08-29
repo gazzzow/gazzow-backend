@@ -30,12 +30,10 @@ export class AuthController {
 
     try {
       const { email, otp } = req.body;
-      logger.info(`Otp payload: ${otp}`);
       const result = await this.verifyOtpAndCreateUserUC.execute(email, otp);
-      
+
       // extract access and refresh token to store it on http-only cookie then
-      const { accessToken, refreshToken, ...data } = result;
-      logger.info(`verify otp result data: ${data}`);
+      const { accessToken, refreshToken, user, message } = result;
 
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
@@ -51,12 +49,12 @@ export class AuthController {
         secure: env.node_env,
       });
 
-      logger.info(`result data: ${data}`);
-      return res.status(201).json({ success: true, data });
+      logger.info(`Created User data: ${user} `);
+      return res.status(201).json({ success: true, user, message });
     } catch (error) {
       if (error instanceof Error) {
-        logger.error(error);
-        res.status(400).json({ success: false, message: error });
+        logger.error(`OTP verification failed: ${error.message}`);
+        res.status(400).json({ success: false, message: error.message });
       }
     }
   };

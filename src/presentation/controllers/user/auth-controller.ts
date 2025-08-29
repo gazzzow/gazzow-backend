@@ -49,7 +49,7 @@ export class AuthController {
         secure: env.node_env,
       });
 
-      logger.info(`Created User data: ${user} `);
+      logger.info(`Created User data: ${JSON.stringify(user)} `);
       return res.status(201).json({ success: true, user, message });
     } catch (error) {
       if (error instanceof Error) {

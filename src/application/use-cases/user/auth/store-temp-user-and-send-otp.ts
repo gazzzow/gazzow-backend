@@ -1,9 +1,10 @@
 import type { IEmailService } from "../../../providers/email-service.js";
 import type { IOtpStore } from "../../../providers/otp-service.js";
-import type { IPasswordHasher } from "../../../providers/password-hasher.js";
+import type { IHashService } from "../../../providers/hash-service.js";
 import type { ITempUserData } from "../../../../domain/entities/user.js";
 import { generateOtp } from "../../../../infrastructure/utils/generate-otp.js";
 import type { IUserRepository } from "../../../interfaces/user-repository.js";
+import logger from "../../../../utils/logger.js";
 
 export interface IOtpConfig {
   ttlSeconds: number;
@@ -15,7 +16,7 @@ export class StoreTempUserAndSentOtpUC {
   constructor(
     private otpStore: IOtpStore,
     private emailService: IEmailService,
-    private passwordHasher: IPasswordHasher,
+    private hashService: IHashService,
     private userRepository: IUserRepository,
     private otpConfig: IOtpConfig,
   ) {}
@@ -30,7 +31,7 @@ export class StoreTempUserAndSentOtpUC {
         userData.email,
       );
 
-      const hashedPassword = await this.passwordHasher.hash(userData.password);
+      const hashedPassword = await this.hashService.hash(userData.password);
 
       const tempUserData = {
         name: userData.name,
@@ -40,7 +41,7 @@ export class StoreTempUserAndSentOtpUC {
 
       // Generate Otp and store hashed otp in redis
       const otp = generateOtp();
-      const hashedOtp = await this.passwordHasher.hash(otp);
+      const hashedOtp = await this.hashService.hash(otp);
 
       if (existingUser) {
         // User exists - send different email like registration attempt
@@ -54,6 +55,7 @@ export class StoreTempUserAndSentOtpUC {
         const otpKey = `otp:register:${tempUserData.email}`;
 
         // Store temp user data and otp on redis
+        logger.info(`temp user data before storing redis cache: ${tempUserData}`)
         await Promise.all([
           await this.otpStore.set(
             tempUserKey,
@@ -95,7 +97,7 @@ export class StoreTempUserAndSentOtpUCFactory {
   static create(
     otpStore: IOtpStore,
     emailService: IEmailService,
-    passwordHasher: IPasswordHasher,
+    hashService: IHashService,
     userRepository: IUserRepository,
     config: {
       otpTtlSeconds: number;
@@ -112,7 +114,7 @@ export class StoreTempUserAndSentOtpUCFactory {
     return new StoreTempUserAndSentOtpUC(
       otpStore,
       emailService,
-      passwordHasher,
+      hashService,
       userRepository,
       otpConfig,
     );

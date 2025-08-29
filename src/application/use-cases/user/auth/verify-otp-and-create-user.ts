@@ -1,20 +1,20 @@
 import type {
   ITempUserData,
-  IUser,
   IUserPublic,
   IVerificationResult,
 } from "../../../../domain/entities/user.js";
 import { UserRole } from "../../../../domain/enums/user-role.js";
 import type { IUserRepository } from "../../../interfaces/user-repository.js";
 import type { IOtpStore } from "../../../providers/otp-service.js";
-import type { IPasswordHasher } from "../../../providers/password-hasher.js";
+import type { IHashService } from "../../../providers/hash-service.js";
 import type { ITokenService } from "../../../providers/token-service.js";
 import logger from "../../../../utils/logger.js";
+import { UserMapper } from "../../../mappers/user.js";
 
 export class VerifyOtpAndCreateUserUC {
   constructor(
     private otpStore: IOtpStore,
-    private passwordHash: IPasswordHasher,
+    private passwordHash: IHashService,
     private userRepository: IUserRepository,
     private tokenService: ITokenService
   ) {}
@@ -34,6 +34,7 @@ export class VerifyOtpAndCreateUserUC {
 
       // Create user in database with transaction-like behavior
       const createdUser = await this.createUserSafely(tempUserData);
+      logger.info(`Created user info in verify-otp: ${JSON.stringify(createdUser)}`)
 
       // Generate tokens after successful user creation
       const tokens = await this.generateToken(createdUser);
@@ -48,7 +49,7 @@ export class VerifyOtpAndCreateUserUC {
           name: createdUser.name,
           email: createdUser.email,
           role: createdUser.role,
-          createdAt: createdUser.createdAt
+          createdAt: createdUser.createdAt,
         },
         message: "Account created successfully",
       };
@@ -83,9 +84,11 @@ export class VerifyOtpAndCreateUserUC {
     if (!tempPayload) {
       throw new Error("Registration session has expired. Please start over.");
     }
+    logger.info(`Temp payload : ${tempPayload}`);
 
     try {
       const userData = JSON.parse(tempPayload);
+      logger.info(`user data : ${userData}`);
 
       // Validate required fields
       if (!userData.name || !userData.email || !userData.password) {
@@ -101,7 +104,7 @@ export class VerifyOtpAndCreateUserUC {
 
   private async createUserSafely(
     tempUserData: ITempUserData
-  ): Promise<IUser> {
+  ): Promise<IUserPublic> {
     try {
       // Check if user was created
       const existingUser = await this.userRepository.findByEmail(
@@ -112,14 +115,15 @@ export class VerifyOtpAndCreateUserUC {
       }
 
       // Create the user
-      const createdUser = await this.userRepository.create({
+      const userDoc = await this.userRepository.create({
         name: tempUserData.name,
         email: tempUserData.email,
         password: tempUserData.password,
         role: UserRole.USER,
       });
 
-      return createdUser;
+      const userDTO = UserMapper.toPublicDTO(userDoc)
+      return userDTO;
     } catch (error) {
       if (error instanceof Error) {
         // Handle specific database errors
@@ -150,11 +154,16 @@ export class VerifyOtpAndCreateUserUC {
       this.tokenService.createRefreshToken(payload),
     ]);
 
-    console.log("Tokens generated for user:", {
-      userId: user.id,
-      email: user.email,
-      timestamp: new Date().toISOString(),
-    });
+    logger.info(
+      `Tokens generated for user:${{
+        id: user.id, // fix: user id is undefined
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        createdAt: user.createdAt,
+        timestamp: new Date().toISOString(),
+      }}`
+    );
     return { accessToken, refreshToken };
   }
 

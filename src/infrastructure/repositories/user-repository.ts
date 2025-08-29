@@ -1,26 +1,20 @@
 import type { IUserRepository } from "../../application/interfaces/user-repository.js";
 import type {
   ICreateUserInput,
-  IUser,
-  IUserWithPassword,
 } from "../../domain/entities/user.js";
-import { UserModel } from "../db/models/user-model.js";
+import { UserModel, type IUserDocument } from "../db/models/user-model.js";
 
 export class UserRepository implements IUserRepository {
-  async create(user: ICreateUserInput): Promise<IUser> {
+  async create(user: ICreateUserInput): Promise<IUserDocument> {
     const newUser = new UserModel(user);
-    await newUser.save();
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...userWithoutPassword } = newUser.toObject();
-    return userWithoutPassword as IUser;
+    return await newUser.save();
   }
 
-  async findByEmail(email: string): Promise<IUserWithPassword | null> {
+  async findByEmail(email: string): Promise<IUserDocument | null> {
     const user = await UserModel.findOne({
       email,
     }).lean();
 
-    return user as IUserWithPassword;
+    return user;
   }
 }

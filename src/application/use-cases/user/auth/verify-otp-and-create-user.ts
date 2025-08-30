@@ -7,16 +7,16 @@ import { UserRole } from "../../../../domain/enums/user-role.js";
 import type { IUserRepository } from "../../../interfaces/user-repository.js";
 import type { IOtpStore } from "../../../providers/otp-service.js";
 import type { IHashService } from "../../../providers/hash-service.js";
-import type { ITokenService } from "../../../providers/token-service.js";
 import logger from "../../../../utils/logger.js";
 import { UserMapper } from "../../../mappers/user.js";
+import type { IAuthService } from "../../../providers/auth-service.js";
 
 export class VerifyOtpAndCreateUserUC {
   constructor(
     private otpStore: IOtpStore,
-    private passwordHash: IHashService,
+    private passwordHash: IHashService, // re-name service
     private userRepository: IUserRepository,
-    private tokenService: ITokenService
+    private authService: IAuthService,
   ) {}
 
   async execute(email: string, otp: string): Promise<IVerificationResult> {
@@ -27,7 +27,7 @@ export class VerifyOtpAndCreateUserUC {
         throw new Error("Email and Otp are required");
       }
 
-      await this.verifyOtp(normalizedEmail, otp);
+      await this.authService.verifyOtp(normalizedEmail, otp);
 
       // Get and validate temp user data
       const tempUserData = await this.getTempUserData(normalizedEmail);
@@ -37,13 +37,21 @@ export class VerifyOtpAndCreateUserUC {
       logger.info(`Created user info in verify-otp: ${JSON.stringify(createdUser)}`)
 
       // Generate tokens after successful user creation
-      const tokens = await this.generateToken(createdUser);
+      const payload = {
+      id: createdUser.id,
+      name: createdUser.name,
+      email: createdUser.email,
+      role: createdUser.role,
+      createdAt: createdUser.createdAt,
+    };
+
+      const [accessToken, refreshToken] = await this.authService.generateTokens(payload);
 
       await this.cleanupTempData(normalizedEmail);
 
       return {
-        accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken,
+        accessToken,
+        refreshToken,
         user: {
           id: createdUser.id,
           name: createdUser.name,
@@ -75,7 +83,7 @@ export class VerifyOtpAndCreateUserUC {
     if (!isValid) {
       throw new Error("Invalid verification code. Please check and try again.");
     }
-  }
+  } // Update this method re-usable
 
   private async getTempUserData(email: string): Promise<ITempUserData> {
     const tempKey = `temp:user:${email}`;
@@ -136,35 +144,6 @@ export class VerifyOtpAndCreateUserUC {
       }
       throw error;
     }
-  }
-
-  private async generateToken(
-    user: IUserPublic
-  ): Promise<{ accessToken: string; refreshToken: string }> {
-    const payload = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      createdAt: user.createdAt,
-    };
-
-    const [accessToken, refreshToken] = await Promise.all([
-      this.tokenService.createAccessToken(payload),
-      this.tokenService.createRefreshToken(payload),
-    ]);
-
-    logger.info(
-      `Tokens generated for user:${{
-        id: user.id, // fix: user id is undefined
-        email: user.email,
-        name: user.name,
-        role: user.role,
-        createdAt: user.createdAt,
-        timestamp: new Date().toISOString(),
-      }}`
-    );
-    return { accessToken, refreshToken };
   }
 
   private async cleanupTempData(email: string): Promise<void> {

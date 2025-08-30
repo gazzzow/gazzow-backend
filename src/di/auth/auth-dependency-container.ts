@@ -1,12 +1,14 @@
+import { env } from "../../infrastructure/config/env.js";
 import { StoreTempUserAndSentOtpUC } from "../../application/use-cases/user/auth/store-temp-user-and-send-otp.js";
 import { VerifyOtpAndCreateUserUC } from "../../application/use-cases/user/auth/verify-otp-and-create-user.js";
-import { env } from "../../infrastructure/config/env.js";
 import { EmailService } from "../../infrastructure/providers/email-service.js";
 import { OtpStore } from "../../infrastructure/providers/otp-service.js";
 import { HashService } from "../../infrastructure/providers/hash-service.js";
 import { TokenService } from "../../infrastructure/providers/token-service.js";
 import { UserRepository } from "../../infrastructure/repositories/user-repository.js";
 import { AuthController } from "../../presentation/controllers/user/auth-controller.js";
+import { LoginUserUC } from "../../application/use-cases/user/auth/login-user.js";
+import { AuthService } from "../../infrastructure/providers/auth-service.js";
 
 export interface IAppConfig {
   otpTtlSeconds: number;
@@ -33,7 +35,7 @@ export class AuthDependencyContainer {
     return new UserRepository();
   }
 
-  createPasswordHasher(): HashService {
+  createHashService(): HashService {
     return new HashService(this.config.saltRounds);
   }
 
@@ -49,6 +51,15 @@ export class AuthDependencyContainer {
     return new TokenService();
   }
 
+  createAuthService(): AuthService{
+    return new AuthService(
+    this.createUserRepository(),
+    this.createTokenService(),
+    this.createOtpStore(),
+    this.createHashService(),      
+    )
+  }
+
   createStoreTempUC(): StoreTempUserAndSentOtpUC {
     const otpConfig = {
       ttlSeconds: this.config.otpTtlSeconds,
@@ -60,7 +71,7 @@ export class AuthDependencyContainer {
     return new StoreTempUserAndSentOtpUC(
       this.createOtpStore(),
       this.createEmailService(),
-      this.createPasswordHasher(),
+      this.createHashService(),
       this.createUserRepository(),
       otpConfig
     );
@@ -69,16 +80,25 @@ export class AuthDependencyContainer {
   createVerifyOtpUC(): VerifyOtpAndCreateUserUC {
     return new VerifyOtpAndCreateUserUC(
       this.createOtpStore(),
-      this.createPasswordHasher(),
+      this.createHashService(),
       this.createUserRepository(),
-      this.createTokenService(),
-    )
+      this.createAuthService(),
+    );
   }
 
-  createAuthController(): AuthController{
+  
+
+  createLoginUC(): LoginUserUC {
+    return new LoginUserUC(
+      this.createAuthService(),
+    );
+  }
+
+  createAuthController(): AuthController {
     return new AuthController(
       this.createStoreTempUC(),
       this.createVerifyOtpUC(),
-    )
+      this.createLoginUC()
+    );
   }
 }

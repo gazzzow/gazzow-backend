@@ -65,9 +65,9 @@ export class AuthController {
 
     try {
       const result = await this.loginUserUC.execute(req.body);
-      logger.info(`User login result: ${JSON.stringify(result)}`);
-
+      
       const { accessToken, refreshToken, user, message } = result;
+      logger.info(`User login data: ${JSON.stringify(user)}`);
 
       res.cookie("accessToken", accessToken, {
         httpOnly: true,

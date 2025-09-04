@@ -1,4 +1,5 @@
 import type { ILoginRequestDTO } from "../../../../domain/dtos/user.js";
+import logger from "../../../../utils/logger.js";
 import { UserMapper } from "../../../mappers/user.js";
 import type { IAuthService } from "../../../providers/auth-service.js";
 
@@ -15,10 +16,13 @@ export class LoginUserUC {
     }
 
     // Compare password
-    const isValidPassword = this.authService.comparePassword(
+    const isValidPassword = await this.authService.comparePassword(
       data.password,
       userDoc.password
     );
+
+    logger.info(`password compare res: ${isValidPassword}`)
+    
     if (!isValidPassword) {
       throw new Error("Invalid Credentials!");
     }

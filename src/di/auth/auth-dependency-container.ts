@@ -9,6 +9,9 @@ import { UserRepository } from "../../infrastructure/repositories/user-repositor
 import { AuthController } from "../../presentation/controllers/user/auth-controller.js";
 import { LoginUserUC } from "../../application/use-cases/user/auth/login-user.js";
 import { AuthService } from "../../infrastructure/providers/auth-service.js";
+import { ForgotPasswordUC } from "../../application/use-cases/user/auth/forgot-password.js";
+import { VerifyOtpUC } from "../../application/use-cases/user/auth/verify-otp.js";
+import { ResetPasswordUC } from "../../application/use-cases/user/auth/reset-password.js";
 
 export interface IAppConfig {
   otpTtlSeconds: number;
@@ -51,13 +54,13 @@ export class AuthDependencyContainer {
     return new TokenService();
   }
 
-  createAuthService(): AuthService{
+  createAuthService(): AuthService {
     return new AuthService(
-    this.createUserRepository(),
-    this.createTokenService(),
-    this.createOtpStore(),
-    this.createHashService(),      
-    )
+      this.createUserRepository(),
+      this.createTokenService(),
+      this.createOtpStore(),
+      this.createHashService()
+    );
   }
 
   createStoreTempUC(): StoreTempUserAndSentOtpUC {
@@ -77,28 +80,57 @@ export class AuthDependencyContainer {
     );
   }
 
-  createVerifyOtpUC(): VerifyOtpAndCreateUserUC {
+  createVerifyUserUC(): VerifyOtpAndCreateUserUC {
     return new VerifyOtpAndCreateUserUC(
       this.createOtpStore(),
       this.createHashService(),
       this.createUserRepository(),
-      this.createAuthService(),
+      this.createAuthService()
     );
   }
 
-  
-
   createLoginUC(): LoginUserUC {
-    return new LoginUserUC(
+    return new LoginUserUC(this.createAuthService());
+  }
+
+  createForgotUC(): ForgotPasswordUC {
+    const otpConfig = {
+      ttlSeconds: this.config.otpTtlSeconds,
+      emailSubject: this.config.emailSubject,
+      emailTemplate: (otp: string, expiryMinutes: number) =>
+        `Your verification code is: ${otp}\n\nThis code expires in ${expiryMinutes} minutes.`,
+    };
+
+    return new ForgotPasswordUC(
       this.createAuthService(),
+      this.createHashService(),
+      this.createEmailService(),
+      this.createOtpStore(),
+      otpConfig
     );
+  }
+
+  createVerifyUC(): VerifyOtpUC {
+    return new VerifyOtpUC(
+      this.createAuthService(),
+    )
+  }
+
+  createResetPasswordUC(): ResetPasswordUC{
+    return new ResetPasswordUC(
+      this.createHashService(),
+      this.createAuthService(),
+    )
   }
 
   createAuthController(): AuthController {
     return new AuthController(
       this.createStoreTempUC(),
-      this.createVerifyOtpUC(),
-      this.createLoginUC()
+      this.createVerifyUserUC(),
+      this.createLoginUC(),
+      this.createForgotUC(),
+      this.createVerifyUC(),
+      this.createResetPasswordUC()
     );
   }
 }

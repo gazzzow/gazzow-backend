@@ -4,6 +4,7 @@ import type { IHashService } from "../../application/providers/hash-service.js";
 import type { IOtpStore } from "../../application/providers/otp-service.js";
 import type { ITokenService } from "../../application/providers/token-service.js";
 import type { IUserPublic } from "../../domain/entities/user.js";
+import logger from "../../utils/logger.js";
 import type { IUserDocument } from "../db/models/user-model.js";
 
 export class AuthService implements IAuthService {
@@ -22,10 +23,13 @@ export class AuthService implements IAuthService {
     return await this.hashService.compare(password, hash);
   }
 
-  async verifyOtp(email: string, otp: string): Promise<void> {
-    const otpKey = `otp:register:${email}`;
-
+  async verifyOtp(email: string, otp: string, purpose: string): Promise<void> {
+    const otpKey = `otp:${purpose}:${email}`;
+    logger.info(`verify otpKey in service: ${otpKey}`)
+    
     const storedHashedOtp = await this.otpStore.get(otpKey);
+    logger.info(`hashedOtp in service: ${storedHashedOtp}`)
+    
     if (!storedHashedOtp) {
       throw new Error(
         "Verification code has expired. Please request a new one."
@@ -46,5 +50,9 @@ export class AuthService implements IAuthService {
       this.tokenService.createAccessToken(payload),
       this.tokenService.createRefreshToken(payload),
     ]);
+  }
+
+  async updatePassword(email: string, hashedPassword: string): Promise<void | null> {
+    return this.userRepository.updatePassword(email, hashedPassword)
   }
 }

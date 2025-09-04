@@ -27,7 +27,7 @@ export class VerifyOtpAndCreateUserUC {
         throw new Error("Email and Otp are required");
       }
 
-      await this.authService.verifyOtp(normalizedEmail, otp);
+      await this.authService.verifyOtp(normalizedEmail, otp, "register");
 
       // Get and validate temp user data
       const tempUserData = await this.getTempUserData(normalizedEmail);

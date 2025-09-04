@@ -1,7 +1,5 @@
 import type { IUserRepository } from "../../application/interfaces/user-repository.js";
-import type {
-  ICreateUserInput,
-} from "../../domain/entities/user.js";
+import type { ICreateUserInput } from "../../domain/entities/user.js";
 import { UserModel, type IUserDocument } from "../db/models/user-model.js";
 
 export class UserRepository implements IUserRepository {
@@ -16,5 +14,17 @@ export class UserRepository implements IUserRepository {
     }).lean();
 
     return user;
+  }
+
+  async updatePassword(
+    email: string,
+    hashedPassword: string
+  ): Promise<void | null> {
+    return await UserModel.findOneAndUpdate(
+      { email },
+      {
+        password: hashedPassword,
+      }
+    );
   }
 }

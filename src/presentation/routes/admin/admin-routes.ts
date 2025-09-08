@@ -1,10 +1,15 @@
 import { Router } from "express";
+import { AdminLoginUC } from "../../../application/use-cases/admin/auth/login.js";
+import { AdminAuthController } from "../../controllers/admin/auth-controller.js";
 
-const router = Router();
+const adminRouter = Router();
 
-router.get("/login", (req, res) => {
-  console.log("admin login api hit");
-  res.send("Admin login api");
-});
+const adminLoginUC = new AdminLoginUC();
+const adminAuthController = new AdminAuthController(adminLoginUC);
 
-export default router;
+adminRouter.post("/auth/login", adminAuthController.login);
+
+
+
+
+export default adminRouter;

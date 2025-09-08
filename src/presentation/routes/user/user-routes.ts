@@ -1,10 +1,16 @@
 import { Router } from "express";
 import { AuthDependencyContainer } from "../../../di/auth/auth-dependency-container.js";
+import { UserDependencyContainer } from "../../../di/user/user-dependency-container.js";
 
 const userRouter = Router();
 
-const container = new AuthDependencyContainer();
-const authController = container.createAuthController();
+const authContainer = new AuthDependencyContainer();
+const userContainer = new UserDependencyContainer();
+
+const tokenMiddleware = authContainer.createTokenMiddleware();
+
+const authController = authContainer.createAuthController();
+const userController = userContainer.createUserController();
 
 userRouter.post("/auth/register", authController.register);
 userRouter.post("/auth/verify-otp", authController.verifyUser);
@@ -12,5 +18,7 @@ userRouter.post("/auth/login", authController.login);
 userRouter.post("/auth/forgot-password", authController.forgotPassword);
 userRouter.post("/auth/forgot-password/verify-otp", authController.verifyOtp);
 userRouter.put("/auth/reset-password", authController.resetPassword);
+
+userRouter.put("/profile/setup",tokenMiddleware.verifyToken, userController.updateProfile);
 
 export default userRouter;

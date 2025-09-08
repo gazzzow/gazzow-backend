@@ -12,6 +12,7 @@ import { AuthService } from "../../infrastructure/providers/auth-service.js";
 import { ForgotPasswordUC } from "../../application/use-cases/user/auth/forgot-password.js";
 import { VerifyOtpUC } from "../../application/use-cases/user/auth/verify-otp.js";
 import { ResetPasswordUC } from "../../application/use-cases/user/auth/reset-password.js";
+import { VerifyToken } from "../../presentation/middleware/verify-token.js";
 
 export interface IAppConfig {
   otpTtlSeconds: number;
@@ -101,6 +102,7 @@ export class AuthDependencyContainer {
         `Your verification code is: ${otp}\n\nThis code expires in ${expiryMinutes} minutes.`,
     };
 
+
     return new ForgotPasswordUC(
       this.createAuthService(),
       this.createHashService(),
@@ -133,4 +135,12 @@ export class AuthDependencyContainer {
       this.createResetPasswordUC()
     );
   }
+
+  createTokenMiddleware(): VerifyToken{
+    return new VerifyToken(
+      this.createTokenService(),
+    )
+  }
+
+  
 }

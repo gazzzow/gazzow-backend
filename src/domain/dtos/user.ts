@@ -5,6 +5,12 @@ export interface IUserPublicDTO {
   name: string;
   email: string;
   role: UserRole;
+  bio?: string;
+  techStacks?: string[];
+  learningGoals?: string[];
+  experience?: string;
+  developerRole?: string;
+  imageUrl?: string;
   createdAt: Date;
 }
 
@@ -26,7 +32,6 @@ export interface IForgotPasswordRequestDTO {
 export interface IForgotPasswordResponseDTO {
   success: boolean;
   message: string;
-
 }
 export interface IVerifyOtpRequestDTO {
   email: string;
@@ -48,3 +53,17 @@ export interface IResetPasswordResponseDTO {
   message: string;
 }
 
+export interface IUpdateProfileRequestDTO {
+  bio?: string;
+  techStacks?: string[];
+  learningGoals?: string[];
+  experience?: string;
+  developerRole?: string;
+  imageUrl?: string;
+}
+
+export interface IUpdateProfileResponseDTO {
+  success: boolean;
+  user: IUserPublicDTO;
+  message: string;
+}

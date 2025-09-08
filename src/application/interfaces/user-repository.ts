@@ -1,3 +1,4 @@
+import type { IUpdateProfileRequestDTO } from "../../domain/dtos/user.js";
 import type {
   ICreateUserInput,
 } from "../../domain/entities/user.js";
@@ -7,4 +8,5 @@ export interface IUserRepository {
   create(user: ICreateUserInput): Promise<IUserDocument>;
   findByEmail(email: string): Promise<IUserDocument | null>;
   updatePassword(email: string, hashedPassword: string): Promise<void | null>;
+  updateProfile(userId: string, profileData: IUpdateProfileRequestDTO): Promise<IUserDocument>
 }

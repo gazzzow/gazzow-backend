@@ -5,6 +5,12 @@ export interface IUser extends IBaseUser {
   name: string;
   email: string;
   role: UserRole;
+  bio?: string;
+  developerRole?: string;
+  imageUrl?: string;
+  experience?: string;
+  techStacks?: string[];
+  learningGoals?: string[];
 }
 
 export interface IUserPublic {
@@ -12,6 +18,12 @@ export interface IUserPublic {
   name: string;
   email: string;
   role: UserRole;
+  bio?: string;
+  developerRole?: string;
+  imageUrl?: string;
+  experience?: string;
+  techStacks?: string[];
+  learningGoals?: string[];
   createdAt: Date;
 }
 
@@ -38,4 +50,3 @@ export interface ITempUserData {
   email: string;
   password: string;
 }
-

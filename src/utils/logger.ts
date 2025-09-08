@@ -1,4 +1,5 @@
 import { createLogger, format, transports } from "winston";
+import { env } from "../infrastructure/config/env.js";
 
 const { combine, timestamp, printf, colorize } = format;
 
@@ -9,7 +10,7 @@ const logFormat = printf(({ level, message, timestamp }) => {
 
 // Create Winston logger
 const logger = createLogger({
-  level: "info", // default log level
+  level: env.node_env ? "info" : "debug", // default log level
   format: combine(
     colorize(), // adds colors to console
     timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),

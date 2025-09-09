@@ -9,4 +9,5 @@ export interface IUserRepository {
   findByEmail(email: string): Promise<IUserDocument | null>;
   updatePassword(email: string, hashedPassword: string): Promise<void | null>;
   updateProfile(userId: string, profileData: IUpdateProfileRequestDTO): Promise<IUserDocument>
+  findAll(): Promise<IUserDocument[]>;
 }

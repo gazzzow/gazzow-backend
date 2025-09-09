@@ -45,4 +45,9 @@ export class UserRepository implements IUserRepository {
 
     return updatedUser;
   }
+
+  findAll(): Promise<IUserDocument[]> {
+    return UserModel.find()
+  }
+
 }

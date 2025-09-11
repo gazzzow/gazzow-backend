@@ -1,4 +1,5 @@
 import type { IUserPublicDTO } from "../../domain/dtos/user.js";
+import { UserStatus } from "../../domain/enums/user-role.js";
 import type { IUserDocument } from "../../infrastructure/db/models/user-model.js";
 
 export class UserMapper {
@@ -8,6 +9,7 @@ export class UserMapper {
       name: user.name,
       email: user.email,
       role: user.role,
+      status: user.status ?? UserStatus.ACTIVE,
       bio: user.bio ?? "",
       techStacks: user.techStacks ?? [],
       learningGoals: user.learningGoals ?? [],

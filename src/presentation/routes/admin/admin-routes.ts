@@ -1,15 +1,16 @@
 import { Router } from "express";
-import { AdminLoginUC } from "../../../application/use-cases/admin/auth/login.js";
-import { AdminAuthController } from "../../controllers/admin/auth-controller.js";
+import { AdminDependencyContainer } from "../../../di/admin/admin-dependency-container.js";
 
 const adminRouter = Router();
 
-const adminLoginUC = new AdminLoginUC();
-const adminAuthController = new AdminAuthController(adminLoginUC);
+
+const adminContainer = new AdminDependencyContainer();
+
+const adminAuthController = adminContainer.createAuthController();
+const adminController = adminContainer.createAdminController();
 
 adminRouter.post("/auth/login", adminAuthController.login);
 
-
-
+adminRouter.get("/users", adminController.listUsers);
 
 export default adminRouter;

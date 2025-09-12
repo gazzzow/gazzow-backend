@@ -1,11 +1,12 @@
 import type { ILoginRequestDTO } from "../../../../domain/dtos/user.js";
 import logger from "../../../../utils/logger.js";
-import { UserMapper } from "../../../mappers/user.js";
+import { UserMapper, type IUserMapper } from "../../../mappers/user.js";
 import type { IAuthService } from "../../../providers/auth-service.js";
 
 export class LoginUserUC {
   constructor(
-    private authService: IAuthService
+    private authService: IAuthService,
+    private userMapper: IUserMapper,
   ) {}
 
   async execute(data: ILoginRequestDTO) {
@@ -27,7 +28,7 @@ export class LoginUserUC {
       throw new Error("Invalid Credentials!");
     }
 
-    const user = UserMapper.toPublicDTO(userDoc);
+    const user = this.userMapper.toPublicDTO(userDoc);
 
     // Generate Tokens
     const payload = {

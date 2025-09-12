@@ -8,7 +8,6 @@ import type { IUserRepository } from "../../../interfaces/user-repository.js";
 import type { IOtpStore } from "../../../providers/otp-service.js";
 import type { IHashService } from "../../../providers/hash-service.js";
 import logger from "../../../../utils/logger.js";
-import { UserMapper } from "../../../mappers/user.js";
 import type { IAuthService } from "../../../providers/auth-service.js";
 
 export class VerifyOtpAndCreateUserUC {
@@ -123,15 +122,14 @@ export class VerifyOtpAndCreateUserUC {
       }
 
       // Create the user
-      const userDoc = await this.userRepository.create({
+      const user = await this.userRepository.create({
         name: tempUserData.name,
         email: tempUserData.email,
         password: tempUserData.password,
         role: UserRole.USER,
       });
 
-      const userDTO = UserMapper.toPublicDTO(userDoc)
-      return userDTO;
+      return user;
     } catch (error) {
       if (error instanceof Error) {
         // Handle specific database errors

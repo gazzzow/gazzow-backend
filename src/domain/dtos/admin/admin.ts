@@ -10,3 +10,10 @@ export interface IUserBlockResponseDTO{
     message:string,
     user: IUserPublic,
 }
+
+
+export interface IGetUserResponseDTO{
+    success: boolean, 
+    message: string,
+    user: IUserPublic,
+}

@@ -12,6 +12,7 @@ const userManagementController = adminContainer.createUserManagementController()
 adminRouter.post("/auth/login", adminAuthController.login);
 
 adminRouter.get("/users", userManagementController.listUsers);
+adminRouter.get('/users/:id', userManagementController.getUser);
 adminRouter.patch("/users/:id/status", userManagementController.blockUser);
 
 export default adminRouter;

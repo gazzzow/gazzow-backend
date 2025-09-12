@@ -3,34 +3,29 @@ import { env } from "../infrastructure/config/env.js";
 
 const { combine, timestamp, printf, colorize } = format;
 
-// Custom log format
 const logFormat = printf(({ level, message, timestamp }) => {
   return `${timestamp} [${level}]: ${message}`;
 });
 
-// Create Winston logger
+const consoleTransport = new transports.Console();
+
 const logger = createLogger({
-  level: env.node_env ? "info" : "debug", // default log level
+  level: env.node_env ? "info" : "debug",
   format: combine(
-    colorize(), // adds colors to console
+    colorize(),
     timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
     logFormat
   ),
   transports: [
-    // Log to console
-    new transports.Console(),
-
-    // Log to a file (error only)
+    consoleTransport,
     new transports.File({ filename: "logs/error.log", level: "error" }),
-
-    // Log all messages
     new transports.File({ filename: "logs/combined.log" }),
   ],
 });
 
-// If in production, log only to files
+// Remove console logs only in production
 if (process.env.NODE_ENV === "production") {
-  logger.remove(new transports.Console());
+  logger.remove(consoleTransport);
 }
 
 export default logger;

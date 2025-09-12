@@ -1,10 +1,11 @@
-import type { UserRole } from "../enums/user-role.js";
+import type { UserRole, UserStatus } from "../enums/user-role.js";
 
 export interface IUserPublicDTO {
   id: string;
   name: string;
   email: string;
   role: UserRole;
+  status: UserStatus;
   bio?: string;
   techStacks?: string[];
   learningGoals?: string[];

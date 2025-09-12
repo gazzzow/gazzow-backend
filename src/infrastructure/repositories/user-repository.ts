@@ -1,20 +1,29 @@
 import type { IUserRepository } from "../../application/interfaces/user-repository.js";
-import type { IUpdateProfileRequestDTO } from "../../domain/dtos/user.js";
+import type { IUserMapper } from "../../application/mappers/user.js";
+import { type IUsersMapper } from "../../application/mappers/users.js";
+import type {
+  IUpdateProfileRequestDTO,
+  IUserPublicDTO,
+} from "../../domain/dtos/user.js";
 import type { ICreateUserInput } from "../../domain/entities/user.js";
 import { UserModel, type IUserDocument } from "../db/models/user-model.js";
 
 export class UserRepository implements IUserRepository {
+  constructor(
+    private userMapper: IUserMapper,
+    private usersMapper: IUsersMapper
+  ) {}
+
   async create(user: ICreateUserInput): Promise<IUserDocument> {
     const newUser = new UserModel(user);
     return await newUser.save();
   }
 
   async findByEmail(email: string): Promise<IUserDocument | null> {
-    const user = await UserModel.findOne({
+    const userDoc = await UserModel.findOne({
       email,
     }).lean();
-
-    return user;
+    return userDoc;
   }
 
   async updatePassword(
@@ -32,22 +41,24 @@ export class UserRepository implements IUserRepository {
   async updateProfile(
     userId: string,
     profileData: IUpdateProfileRequestDTO
-  ): Promise<IUserDocument> {
-    const updatedUser = await UserModel.findByIdAndUpdate(
+  ): Promise<IUserPublicDTO> {
+    const updatedUserDoc = await UserModel.findByIdAndUpdate(
       userId,
       { $set: profileData },
       { new: true }
     ).lean();
 
-    if (!updatedUser) {
+    if (!updatedUserDoc) {
       throw new Error("User not found");
     }
+
+    const updatedUser = this.userMapper.toPublicDTO(updatedUserDoc);
 
     return updatedUser;
   }
 
-  findAll(): Promise<IUserDocument[]> {
-    return UserModel.find()
+  async findAll(): Promise<IUserPublicDTO[]> {
+    const usersDoc = await UserModel.find();
+    return this.usersMapper.toPublicUsersDTO(usersDoc);
   }
-
 }

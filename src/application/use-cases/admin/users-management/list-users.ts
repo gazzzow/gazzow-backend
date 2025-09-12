@@ -7,9 +7,10 @@ export class ListUsersUC{
     ){}
 
     execute = async () => {
+        
         const users = await this.userRepository.findAll();
-        logger.debug(`user list: ${users}`);
-
+        logger.debug(`users list: ${users}`);
+        console.log(`users list after mapped: ${JSON.stringify(users)}`)
         return {
             success: true,
             users,

@@ -13,6 +13,8 @@ import { ForgotPasswordUC } from "../../application/use-cases/user/auth/forgot-p
 import { VerifyOtpUC } from "../../application/use-cases/user/auth/verify-otp.js";
 import { ResetPasswordUC } from "../../application/use-cases/user/auth/reset-password.js";
 import { VerifyToken } from "../../presentation/middleware/verify-token.js";
+import { UserMapper, type IUserMapper } from "../../application/mappers/user.js";
+import { UsersMapper, type IUsersMapper } from "../../application/mappers/users.js";
 
 export interface IAppConfig {
   otpTtlSeconds: number;
@@ -36,7 +38,20 @@ export class AuthDependencyContainer {
   }
 
   createUserRepository(): UserRepository {
-    return new UserRepository();
+    return new UserRepository(
+      this.createUserMapper(),
+      this.createUsersMapper(),
+    );
+  }
+
+  createUserMapper(): IUserMapper{
+    return new UserMapper();
+  }
+
+  createUsersMapper(): IUsersMapper{
+    return new UsersMapper(
+      this.createUserMapper(),
+    );
   }
 
   createHashService(): HashService {
@@ -91,7 +106,7 @@ export class AuthDependencyContainer {
   }
 
   createLoginUC(): LoginUserUC {
-    return new LoginUserUC(this.createAuthService());
+    return new LoginUserUC(this.createAuthService(), this.createUserMapper());
   }
 
   createForgotUC(): ForgotPasswordUC {

@@ -1,5 +1,7 @@
+import { UserMapper, type IUserMapper } from "../../application/mappers/user.js";
+import { UsersMapper, type IUsersMapper } from "../../application/mappers/users.js";
 import { AdminLoginUC } from "../../application/use-cases/admin/auth/login.js";
-import { ListUsersUC } from "../../application/use-cases/admin/users/list-users.js";
+import { ListUsersUC } from "../../application/use-cases/admin/users-management/list-users.js";
 import { UserRepository } from "../../infrastructure/repositories/user-repository.js";
 import { AdminAuthController } from "../../presentation/controllers/admin/auth-controller.js";
 import { UserManagementController } from "../../presentation/controllers/admin/user-controller.js";
@@ -8,7 +10,20 @@ export class AdminDependencyContainer {
   constructor() {}
 
   createUserRepository(): UserRepository {
-    return new UserRepository();
+    return new UserRepository(
+      this.createUserMapper(),
+      this.createUsersMapper(),
+    );
+  }
+
+  createUserMapper(): IUserMapper{
+    return new UserMapper()
+  }
+
+  createUsersMapper(): IUsersMapper{
+    return new UsersMapper(
+      this.createUserMapper()
+    )
   }
 
   createLoginUC(): AdminLoginUC {

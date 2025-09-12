@@ -3,6 +3,7 @@ dotenv.config();
 
 export const env = {
   node_env: process.env.NODE_ENV === "production" ? true : false,
+  base_url: process.env.BASE_URL,
   port: process.env.PORT || 5001,
   mongo_uri: process.env.MONGO_URI,
   redis_url: process.env.REDIS_URL,

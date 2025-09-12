@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { AuthDependencyContainer } from "../../../di/auth/auth-dependency-container.js";
 import { UserDependencyContainer } from "../../../di/user/user-dependency-container.js";
+import logger from "../../../utils/logger.js";
 
 const userRouter = Router();
 
@@ -8,6 +9,7 @@ const authContainer = new AuthDependencyContainer();
 const userContainer = new UserDependencyContainer();
 
 const tokenMiddleware = authContainer.createTokenMiddleware();
+const blockedUserMiddleware = authContainer.createBlockedUserMiddleware();
 
 const authController = authContainer.createAuthController();
 const userController = userContainer.createUserController();
@@ -19,6 +21,11 @@ userRouter.post("/auth/forgot-password", authController.forgotPassword);
 userRouter.post("/auth/forgot-password/verify-otp", authController.verifyOtp);
 userRouter.put("/auth/reset-password", authController.resetPassword);
 
-userRouter.put("/profile/setup",tokenMiddleware.verifyToken, userController.updateProfile);
+userRouter.put(
+  "/profile/setup",
+  tokenMiddleware.verifyToken,
+  blockedUserMiddleware.isBlocked,
+  userController.updateProfile
+);
 
 export default userRouter;

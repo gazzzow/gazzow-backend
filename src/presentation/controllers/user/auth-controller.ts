@@ -93,6 +93,9 @@ export class AuthController {
         secure: env.node_env,
       });
 
+      if(user.status === 'blocked'){
+        return res.status(403).json({success: false, message: 'Access Denied: User is blocked'})
+      }
       res.status(200).json({ success: true, user, message });
     } catch (e) {
       if (e instanceof Error) {

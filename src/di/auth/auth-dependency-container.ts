@@ -13,8 +13,19 @@ import { ForgotPasswordUC } from "../../application/use-cases/user/auth/forgot-p
 import { VerifyOtpUC } from "../../application/use-cases/user/auth/verify-otp.js";
 import { ResetPasswordUC } from "../../application/use-cases/user/auth/reset-password.js";
 import { VerifyToken } from "../../presentation/middleware/verify-token.js";
-import { UserMapper, type IUserMapper } from "../../application/mappers/user.js";
-import { UsersMapper, type IUsersMapper } from "../../application/mappers/users.js";
+import {
+  UserMapper,
+  type IUserMapper,
+} from "../../application/mappers/user.js";
+import {
+  UsersMapper,
+  type IUsersMapper,
+} from "../../application/mappers/users.js";
+import {
+  CheckBlockedUserMiddleware,
+  type ICheckBlockedUserMiddleware,
+} from "../../presentation/middleware/check-blocked-user.js";
+import type { IUserRepository } from "../../application/interfaces/user-repository.js";
 
 export interface IAppConfig {
   otpTtlSeconds: number;
@@ -37,21 +48,19 @@ export class AuthDependencyContainer {
     this.config = getConfig();
   }
 
-  createUserRepository(): UserRepository {
+  createUserRepository(): IUserRepository {
     return new UserRepository(
       this.createUserMapper(),
-      this.createUsersMapper(),
+      this.createUsersMapper()
     );
   }
 
-  createUserMapper(): IUserMapper{
+  createUserMapper(): IUserMapper {
     return new UserMapper();
   }
 
-  createUsersMapper(): IUsersMapper{
-    return new UsersMapper(
-      this.createUserMapper(),
-    );
+  createUsersMapper(): IUsersMapper {
+    return new UsersMapper(this.createUserMapper());
   }
 
   createHashService(): HashService {
@@ -117,7 +126,6 @@ export class AuthDependencyContainer {
         `Your verification code is: ${otp}\n\nThis code expires in ${expiryMinutes} minutes.`,
     };
 
-
     return new ForgotPasswordUC(
       this.createAuthService(),
       this.createHashService(),
@@ -128,18 +136,17 @@ export class AuthDependencyContainer {
   }
 
   createVerifyUC(): VerifyOtpUC {
-    return new VerifyOtpUC(
-      this.createAuthService(),
-    )
+    return new VerifyOtpUC(this.createAuthService());
   }
 
-  createResetPasswordUC(): ResetPasswordUC{
+  createResetPasswordUC(): ResetPasswordUC {
     return new ResetPasswordUC(
       this.createHashService(),
-      this.createAuthService(),
-    )
+      this.createAuthService()
+    );
   }
 
+  // auth controller
   createAuthController(): AuthController {
     return new AuthController(
       this.createStoreTempUC(),
@@ -151,11 +158,13 @@ export class AuthDependencyContainer {
     );
   }
 
-  createTokenMiddleware(): VerifyToken{
-    return new VerifyToken(
-      this.createTokenService(),
-    )
+  // token middleware
+  createTokenMiddleware(): VerifyToken {
+    return new VerifyToken(this.createTokenService());
   }
 
-  
+  // Check blocked user middleware
+  createBlockedUserMiddleware(): ICheckBlockedUserMiddleware {
+    return new CheckBlockedUserMiddleware(this.createUserRepository());
+  }
 }

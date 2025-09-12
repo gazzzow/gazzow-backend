@@ -11,6 +11,10 @@ import {
   BlockUserUC,
   type IBlockUserUC,
 } from "../../application/use-cases/admin/users-management/block-user.js";
+import {
+  GetUserUC,
+  type IGetUserUC,
+} from "../../application/use-cases/admin/users-management/get-user.js";
 import { ListUsersUC } from "../../application/use-cases/admin/users-management/list-users.js";
 import { UserRepository } from "../../infrastructure/repositories/user-repository.js";
 import { AdminAuthController } from "../../presentation/controllers/admin/auth-controller.js";
@@ -46,13 +50,21 @@ export class AdminDependencyContainer {
     return new BlockUserUC(this.createUserRepository());
   }
 
+  createGetUserUC(): IGetUserUC {
+    return new GetUserUC(this.createUserRepository());
+  }
+
   // Admin auth Controller
   createAuthController() {
     return new AdminAuthController(this.createLoginUC());
   }
 
-  // Admin Controller
+  // Admin User Controller
   createUserManagementController() {
-    return new UserManagementController(this.createListUsersUC(), this.createBlockUserUC());
+    return new UserManagementController(
+      this.createListUsersUC(),
+      this.createBlockUserUC(),
+      this.createGetUserUC(),
+    );
   }
 }

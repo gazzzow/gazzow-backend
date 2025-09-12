@@ -6,6 +6,7 @@ import type {
   IUserPublicDTO,
 } from "../../domain/dtos/user.js";
 import type { ICreateUserInput } from "../../domain/entities/user.js";
+import type { UserStatus } from "../../domain/enums/user-role.js";
 import { UserModel, type IUserDocument } from "../db/models/user-model.js";
 
 export class UserRepository implements IUserRepository {
@@ -17,6 +18,14 @@ export class UserRepository implements IUserRepository {
   async create(user: ICreateUserInput): Promise<IUserDocument> {
     const newUser = new UserModel(user);
     return await newUser.save();
+  }
+
+  async findById(id: string): Promise<IUserPublicDTO | null> {
+    const userDoc = await UserModel.findById(id);
+    if (!userDoc) {
+      throw new Error("User Not Found");
+    }
+    return this.userMapper.toPublicDTO(userDoc);
   }
 
   async findByEmail(email: string): Promise<IUserDocument | null> {
@@ -60,5 +69,24 @@ export class UserRepository implements IUserRepository {
   async findAll(): Promise<IUserPublicDTO[]> {
     const usersDoc = await UserModel.find();
     return this.usersMapper.toPublicUsersDTO(usersDoc);
+  }
+
+  async updateStatus(
+    id: string,
+    status: UserStatus
+  ): Promise<IUserPublicDTO | null> {
+    const updatedUserDoc = await UserModel.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    ).lean();
+
+    if(!updatedUserDoc){
+      throw new Error("User not found")
+    }
+
+    const updatedUser = this.userMapper.toPublicDTO(updatedUserDoc);
+
+    return updatedUser;
   }
 }

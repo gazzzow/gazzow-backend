@@ -7,10 +7,11 @@ const adminRouter = Router();
 const adminContainer = new AdminDependencyContainer();
 
 const adminAuthController = adminContainer.createAuthController();
-const adminController = adminContainer.createAdminController();
+const userManagementController = adminContainer.createUserManagementController();
 
 adminRouter.post("/auth/login", adminAuthController.login);
 
-adminRouter.get("/users", adminController.listUsers);
+adminRouter.get("/users", userManagementController.listUsers);
+adminRouter.patch("/users/:id/status", userManagementController.blockUser);
 
 export default adminRouter;

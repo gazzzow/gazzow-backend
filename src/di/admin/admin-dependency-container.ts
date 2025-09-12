@@ -1,10 +1,20 @@
-import { UserMapper, type IUserMapper } from "../../application/mappers/user.js";
-import { UsersMapper, type IUsersMapper } from "../../application/mappers/users.js";
+import {
+  UserMapper,
+  type IUserMapper,
+} from "../../application/mappers/user.js";
+import {
+  UsersMapper,
+  type IUsersMapper,
+} from "../../application/mappers/users.js";
 import { AdminLoginUC } from "../../application/use-cases/admin/auth/login.js";
+import {
+  BlockUserUC,
+  type IBlockUserUC,
+} from "../../application/use-cases/admin/users-management/block-user.js";
 import { ListUsersUC } from "../../application/use-cases/admin/users-management/list-users.js";
 import { UserRepository } from "../../infrastructure/repositories/user-repository.js";
 import { AdminAuthController } from "../../presentation/controllers/admin/auth-controller.js";
-import { UserManagementController } from "../../presentation/controllers/admin/user-controller.js";
+import { UserManagementController } from "../../presentation/controllers/admin/user-management.js";
 
 export class AdminDependencyContainer {
   constructor() {}
@@ -12,18 +22,16 @@ export class AdminDependencyContainer {
   createUserRepository(): UserRepository {
     return new UserRepository(
       this.createUserMapper(),
-      this.createUsersMapper(),
+      this.createUsersMapper()
     );
   }
 
-  createUserMapper(): IUserMapper{
-    return new UserMapper()
+  createUserMapper(): IUserMapper {
+    return new UserMapper();
   }
 
-  createUsersMapper(): IUsersMapper{
-    return new UsersMapper(
-      this.createUserMapper()
-    )
+  createUsersMapper(): IUsersMapper {
+    return new UsersMapper(this.createUserMapper());
   }
 
   createLoginUC(): AdminLoginUC {
@@ -34,15 +42,17 @@ export class AdminDependencyContainer {
     return new ListUsersUC(this.createUserRepository());
   }
 
-  createAuthController() {
-    return new AdminAuthController(
-        this.createLoginUC(),
-    )
+  createBlockUserUC(): IBlockUserUC {
+    return new BlockUserUC(this.createUserRepository());
   }
 
-  createAdminController() {
-    return new UserManagementController(
-      this.createListUsersUC(),
-    );
+  // Admin auth Controller
+  createAuthController() {
+    return new AdminAuthController(this.createLoginUC());
+  }
+
+  // Admin Controller
+  createUserManagementController() {
+    return new UserManagementController(this.createListUsersUC(), this.createBlockUserUC());
   }
 }

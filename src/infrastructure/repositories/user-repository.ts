@@ -22,10 +22,8 @@ export class UserRepository implements IUserRepository {
 
   async findById(id: string): Promise<IUserPublicDTO | null> {
     const userDoc = await UserModel.findById(id);
-    if (!userDoc) {
-      throw new Error("User Not Found");
-    }
-    return this.userMapper.toPublicDTO(userDoc);
+    
+    return userDoc ?  this.userMapper.toPublicDTO(userDoc) : userDoc;
   }
 
   async findByEmail(email: string): Promise<IUserDocument | null> {

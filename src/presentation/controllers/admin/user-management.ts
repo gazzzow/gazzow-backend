@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import type { ListUsersUC } from "../../../application/use-cases/admin/users-management/list-users.js";
 import logger from "../../../utils/logger.js";
 import type { IBlockUserUC } from "../../../application/use-cases/admin/users-management/block-user.js";
@@ -25,7 +25,7 @@ export class UserManagementController {
     }
   };
 
-  blockUser = async (req: Request, res: Response) => {
+  blockUser = async (req: Request, res: Response, next: NextFunction) => {
     logger.debug("User block api hit 🚀");
 
     try {
@@ -42,7 +42,7 @@ export class UserManagementController {
       return res.status(200).json(result);
     } catch (error) {
       if (error instanceof Error) {
-        res.status(500).json({ success: false, message: error.message });
+        next(error)
       }
     }
   };

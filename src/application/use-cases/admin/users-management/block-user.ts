@@ -1,5 +1,7 @@
 import type { IUserBlockResponseDTO } from "../../../../domain/dtos/admin/admin.js";
 import type { UserStatus } from "../../../../domain/enums/user-role.js";
+import { AppError } from "../../../../utils/app-error.js";
+import logger from "../../../../utils/logger.js";
 import type { IUserRepository } from "../../../interfaces/user-repository.js";
 
 export interface IBlockUserUC {
@@ -13,9 +15,10 @@ export class BlockUserUC implements IBlockUserUC {
     id: string,
     status: UserStatus
   ): Promise<IUserBlockResponseDTO> {
+    logger.debug('blocker user uc start process request')
     const user = await this.userRepository.findById(id);
     if (!user) {
-      throw new Error("User Not Found");
+      throw new AppError("User Not Found", 404);
     }
 
     const updatedUser = await this.userRepository.updateStatus(id, status);

@@ -74,3 +74,8 @@ export interface IRefreshAccessTokenResponseDTO{
   newAccessToken: string;
   message: string;
 }
+
+export interface IGetUserProfileResponseDTO{
+  success: true,
+  user: IUserPublicDTO,
+}

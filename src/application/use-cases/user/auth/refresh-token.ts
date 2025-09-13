@@ -15,7 +15,7 @@ export class RefreshAccessTokenUC implements IRefreshAccessTokenUC {
     const decoded = await this.tokenService.verifyRefreshToken(token);
     if (!decoded) {
       throw new AppError(
-        ResponseMessages.INVALID_REFRESH_TOKEN,
+        ResponseMessages.InvalidRefreshToken,
         HttpStatusCode.UNAUTHORIZED
       );
     }
@@ -32,7 +32,7 @@ export class RefreshAccessTokenUC implements IRefreshAccessTokenUC {
 
     return {
       success: true,
-      message: ResponseMessages.ACCESS_TOKEN_REFRESHED,
+      message: ResponseMessages.AccessTokenRefreshed,
       newAccessToken,
     };
   };

@@ -185,7 +185,7 @@ export class AuthController {
       logger.info(`Refresh token extracted from cookie: ${refreshToken}`);
       if (!refreshToken) {
         throw new AppError(
-          ResponseMessages.NO_REFRESH_TOKEN,
+          ResponseMessages.NoRefreshToken,
           HttpStatusCode.UNAUTHORIZED
         );
       }

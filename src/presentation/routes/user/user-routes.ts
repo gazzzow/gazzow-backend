@@ -20,13 +20,19 @@ userRouter.post("/auth/forgot-password", authController.forgotPassword);
 userRouter.post("/auth/forgot-password/verify-otp", authController.verifyOtp);
 userRouter.put("/auth/reset-password", authController.resetPassword);
 
-userRouter.post("/auth/refresh", authController.refreshAccessToken)
+userRouter.post("/auth/refresh", authController.refreshAccessToken);
 
 userRouter.put(
   "/profile/setup",
   tokenMiddleware.verifyToken,
   blockedUserMiddleware.isBlocked,
   userController.updateProfile
+);
+userRouter.get(
+  "/profile/me",
+  tokenMiddleware.verifyToken,
+  blockedUserMiddleware.isBlocked,
+  userController.getUserProfile
 );
 
 export default userRouter;

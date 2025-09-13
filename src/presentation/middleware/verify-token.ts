@@ -2,7 +2,6 @@ import type { NextFunction, Request, Response } from "express";
 import type { ITokenService } from "../../application/providers/token-service.js";
 import type { IUserPublic } from "../../domain/entities/user.js";
 import logger from "../../utils/logger.js";
-import { env } from "../../infrastructure/config/env.js";
 import { AppError } from "../../utils/app-error.js";
 
 interface AuthRequest extends Request {

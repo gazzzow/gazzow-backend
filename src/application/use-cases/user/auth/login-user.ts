@@ -1,4 +1,7 @@
 import type { ILoginRequestDTO } from "../../../../domain/dtos/user.js";
+import { AppError } from "../../../../utils/app-error.js";
+import { ResponseMessages } from "../../../../utils/constants/response-messages.js";
+import { HttpStatusCode } from "../../../../utils/constants/status-codes.js";
 import logger from "../../../../utils/logger.js";
 import type { IUserMapper } from "../../../mappers/user.js";
 import type { IAuthService } from "../../../providers/auth-service.js";
@@ -13,7 +16,7 @@ export class LoginUserUC {
     // Find user by email
     const userDoc = await this.authService.checkUserExists(data.email);
     if (!userDoc) {
-      throw new Error("User not found!");
+      throw new AppError(ResponseMessages.UserNotFound, HttpStatusCode.NOT_FOUND);
     }
 
     // Compare password

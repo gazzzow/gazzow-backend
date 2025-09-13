@@ -20,6 +20,8 @@ userRouter.post("/auth/forgot-password", authController.forgotPassword);
 userRouter.post("/auth/forgot-password/verify-otp", authController.verifyOtp);
 userRouter.put("/auth/reset-password", authController.resetPassword);
 
+userRouter.post("/auth/refresh", authController.refreshAccessToken)
+
 userRouter.put(
   "/profile/setup",
   tokenMiddleware.verifyToken,

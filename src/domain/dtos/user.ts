@@ -68,3 +68,9 @@ export interface IUpdateProfileResponseDTO {
   user: IUserPublicDTO;
   message: string;
 }
+
+export interface IRefreshAccessTokenResponseDTO{
+  success: boolean;
+  newAccessToken: string;
+  message: string;
+}

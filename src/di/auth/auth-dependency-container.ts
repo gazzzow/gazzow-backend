@@ -26,6 +26,10 @@ import {
   type ICheckBlockedUserMiddleware,
 } from "../../presentation/middleware/check-blocked-user.js";
 import type { IUserRepository } from "../../application/interfaces/user-repository.js";
+import {
+  RefreshAccessTokenUC,
+  type IRefreshAccessTokenUC,
+} from "../../application/use-cases/user/auth/refresh-token.js";
 
 export interface IAppConfig {
   otpTtlSeconds: number;
@@ -146,6 +150,10 @@ export class AuthDependencyContainer {
     );
   }
 
+  createRefreshAccessTokenUC = () : IRefreshAccessTokenUC => {
+    return new RefreshAccessTokenUC(this.createTokenService());
+  }
+
   // auth controller
   createAuthController(): AuthController {
     return new AuthController(
@@ -154,7 +162,8 @@ export class AuthDependencyContainer {
       this.createLoginUC(),
       this.createForgotUC(),
       this.createVerifyUC(),
-      this.createResetPasswordUC()
+      this.createResetPasswordUC(),
+      this.createRefreshAccessTokenUC(),
     );
   }
 

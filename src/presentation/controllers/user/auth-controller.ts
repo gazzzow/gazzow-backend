@@ -13,6 +13,9 @@ import type { VerifyOtpUC } from "../../../application/use-cases/user/auth/verif
 import type { ResetPasswordUC } from "../../../application/use-cases/user/auth/reset-password.js";
 import { AppError } from "../../../utils/app-error.js";
 import { UserStatus } from "../../../domain/enums/user-role.js";
+import { ResponseMessages } from "../../../utils/constants/response-messages.js";
+import { HttpStatusCode } from "../../../utils/constants/status-codes.js";
+import type { IRefreshAccessTokenUC } from "../../../application/use-cases/user/auth/refresh-token.js";
 
 export class AuthController {
   constructor(
@@ -21,7 +24,8 @@ export class AuthController {
     private loginUserUC: LoginUserUC,
     private forgotPasswordUC: ForgotPasswordUC,
     private verifyOtpUC: VerifyOtpUC,
-    private resetPasswordUC: ResetPasswordUC
+    private resetPasswordUC: ResetPasswordUC,
+    private refreshAccessTokenUc: IRefreshAccessTokenUC
   ) {}
 
   register = async (req: Request, res: Response) => {
@@ -167,6 +171,39 @@ export class AuthController {
         logger.error(`reset-password error: ${error.message}`);
         res.status(400).json({ success: false, message: error.message });
       }
+    }
+  };
+
+  refreshAccessToken = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    logger.debug(`Refresh Token api hit🚀`);
+    try {
+      const { refreshToken } = req.cookies;
+      logger.info(`Refresh token extracted from cookie: ${refreshToken}`);
+      if (!refreshToken) {
+        throw new AppError(
+          ResponseMessages.NO_REFRESH_TOKEN,
+          HttpStatusCode.UNAUTHORIZED
+        );
+      }
+
+      const { newAccessToken, ...response } =
+        await this.refreshAccessTokenUc.execute(refreshToken);
+
+      // set new access token cookie
+      res.cookie("accessToken", newAccessToken, {
+        httpOnly: true,
+        maxAge: env.jwt.access_expires, // 15 minutes
+        sameSite: "strict",
+        secure: env.node_env,
+      });
+
+      return res.status(HttpStatusCode.OK).json(response);
+    } catch (error) {
+      next(error);
     }
   };
 }

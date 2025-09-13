@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import { env } from "../../../infrastructure/config/env.js";
 import type { StoreTempUserAndSentOtpUC } from "../../../application/use-cases/user/auth/store-temp-user-and-send-otp.js";
 import type { VerifyOtpAndCreateUserUC } from "../../../application/use-cases/user/auth/verify-otp-and-create-user.js";
@@ -11,6 +11,8 @@ import type {
 import logger from "../../../utils/logger.js";
 import type { VerifyOtpUC } from "../../../application/use-cases/user/auth/verify-otp.js";
 import type { ResetPasswordUC } from "../../../application/use-cases/user/auth/reset-password.js";
+import { AppError } from "../../../utils/app-error.js";
+import { UserStatus } from "../../../domain/enums/user-role.js";
 
 export class AuthController {
   constructor(
@@ -70,7 +72,7 @@ export class AuthController {
     }
   };
 
-  login = async (req: Request, res: Response) => {
+  login = async (req: Request, res: Response, next: NextFunction) => {
     logger.debug("login route hit");
 
     try {
@@ -93,14 +95,14 @@ export class AuthController {
         secure: env.node_env,
       });
 
-      if(user.status === 'blocked'){
-        return res.status(403).json({success: false, message: 'Access Denied: User is blocked'})
+      if (user.status === UserStatus.BLOCKED) {
+        throw new AppError("Access Denied: User is blocked", 403);
       }
       res.status(200).json({ success: true, user, message });
-    } catch (e) {
-      if (e instanceof Error) {
-        logger.error(`Login error: ${e.message}`);
-        res.status(400).json({ success: false, message: e.message });
+    } catch (err) {
+      if (err instanceof Error) {
+        logger.error(`Login error: ${err.message}`);
+        next(err);
       }
     }
   };
@@ -114,8 +116,8 @@ export class AuthController {
     try {
       const { email } = req.body;
 
-      if(!email){
-        res.status(400).json({success: false, message: 'Email required!'})
+      if (!email) {
+        res.status(400).json({ success: false, message: "Email required!" });
       }
 
       const result = await this.forgotPasswordUC.execute(email);

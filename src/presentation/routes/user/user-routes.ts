@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { AuthDependencyContainer } from "../../../di/auth/auth-dependency-container.js";
 import { UserDependencyContainer } from "../../../di/user/user-dependency-container.js";
-import logger from "../../../utils/logger.js";
 
 const userRouter = Router();
 

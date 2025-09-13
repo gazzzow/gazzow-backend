@@ -1,12 +1,12 @@
 import type { ILoginRequestDTO } from "../../../../domain/dtos/user.js";
 import logger from "../../../../utils/logger.js";
-import { UserMapper, type IUserMapper } from "../../../mappers/user.js";
+import type { IUserMapper } from "../../../mappers/user.js";
 import type { IAuthService } from "../../../providers/auth-service.js";
 
 export class LoginUserUC {
   constructor(
     private authService: IAuthService,
-    private userMapper: IUserMapper,
+    private userMapper: IUserMapper
   ) {}
 
   async execute(data: ILoginRequestDTO) {
@@ -22,8 +22,8 @@ export class LoginUserUC {
       userDoc.password
     );
 
-    logger.info(`password compare res: ${isValidPassword}`)
-    
+    logger.info(`password compare res: ${isValidPassword}`);
+
     if (!isValidPassword) {
       throw new Error("Invalid Credentials!");
     }
